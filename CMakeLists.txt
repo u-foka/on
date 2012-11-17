@@ -1,4 +1,5 @@
 project(ON)
+set(PROJECT_VERSION "0.0.1")
 cmake_minimum_required(VERSION 2.8)
 
 set(ON_BINARY_DIR ${PROJECT_BINARY_DIR}/bin)
@@ -8,14 +9,20 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ON_BINARY_DIR} CACHE PATH "Single Directory
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${ON_BINARY_DIR} CACHE PATH "Single Directory for all Libraries")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${ON_BINARY_DIR} CACHE PATH "Single Directory for all static libraries.")
 
-# Enable C++11
-if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions(-std=gnu++0x)
-endif()
+# Source
+add_subdirectory(src)
 
-add_subdirectory(common)
-add_subdirectory(server)
-add_subdirectory(clients)
-
+# Testing
 enable_testing()
 add_test(ONCommon ${ON_BINARY_DIR}/ONCommon-Tests)
+
+# Documentation
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc ALL
+        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile > /dev/null
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+endif(DOXYGEN_FOUND)
