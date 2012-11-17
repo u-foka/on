@@ -11,10 +11,8 @@ namespace ON {
 namespace Common {
 
 QSharedPointer<Logger> Logger::_instance;
-QMap<Logger::Level, QString> const Logger::LevelNames = initLevelNames();
 
-
-QSharedPointer<Logger> & Logger::Instance()
+const QSharedPointer<Logger> & Logger::Instance()
 {
     if (_instance.isNull()) {
         _instance = QSharedPointer<Logger>(new Logger);
@@ -37,22 +35,28 @@ QMap<Logger::Level, QString> Logger::initLevelNames()
 }
 
 Logger::Logger()
-    : cout(stdout, QIODevice::WriteOnly)
+    : LevelNames(initLevelNames()), _logModule("Logger")
 {
-
+    _LOG(Trace, _logModule, "Created");
 }
 
 Logger::~Logger()
 {
-
+    _LOG(Trace, _logModule, "Destroyed");
 }
 
 void Logger::Log(Level level, QString module, QString message, QString location)
 {
     QMutexLocker locker(&_mutex);
 
-    cout << LevelNames[level] << " " << module << " " << message << " // " << location << endl << flush;
-
+    std::cout << LevelNames[level].toUtf8().constData() << " " <<
+                 module.toUtf8().constData() << " " <<
+                 message.toUtf8().constData();
+    if (! location.isEmpty()) {
+        std::cout << " // " << location.toUtf8().constData();
+    }
+    std::cout << std::endl;
+    std::cout.flush();
 }
 
 } // namespace Common

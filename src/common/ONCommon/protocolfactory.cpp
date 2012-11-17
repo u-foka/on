@@ -10,9 +10,8 @@ namespace ON {
 namespace Common {
 
 QSharedPointer<ProtocolFactory> ProtocolFactory::_instance;
-const QString ProtocolFactory::_logModule = "ProtocolFactory";
 
-QSharedPointer<ProtocolFactory> & ProtocolFactory::Instance()
+const QSharedPointer<ProtocolFactory> &ProtocolFactory::Instance()
 {
     if (_instance.isNull()) {
         _instance = QSharedPointer<ProtocolFactory>(new ProtocolFactory);
@@ -22,13 +21,15 @@ QSharedPointer<ProtocolFactory> & ProtocolFactory::Instance()
 }
 
 ProtocolFactory::ProtocolFactory()
+    : _logger(Logger::Instance()), _logModule("ProtocolFactory")
 {
     LOG(Trace, _logModule, "Created");
 }
 
 ProtocolFactory::~ProtocolFactory()
 {
-    LOG(Trace, _logModule, "Destroyed");
+    // Use the stored logger since the global instance may be already destructed
+    _logger->_LOG(Trace, _logModule, "Destroyed");
 }
 
 } // namespace Common

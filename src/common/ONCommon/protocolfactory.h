@@ -8,10 +8,11 @@ namespace IWStudio {
 namespace ON {
 namespace Common {
 
+class Logger;
 class ProtocolFactory
 {
 public:
-    static QSharedPointer<ProtocolFactory> & Instance();
+    const static QSharedPointer<ProtocolFactory> & Instance();
     virtual ~ProtocolFactory();
 
 protected:
@@ -22,7 +23,9 @@ protected:
 private:
     static QSharedPointer<ProtocolFactory> _instance;
 
-    static const QString _logModule;
+
+    const QString _logModule;
+    const QSharedPointer<Logger> _logger;
 
 };
 

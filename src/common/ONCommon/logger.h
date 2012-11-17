@@ -9,9 +9,11 @@
 
 #define LOG(_LEVEL_, _MODULE_, _MESSAGE_) \
     Com::IWStudio::ON::Common::Logger::Instance()-> \
-        Log(Com::IWStudio::ON::Common::Logger::Level::_LEVEL_, \
-            _MODULE_, _MESSAGE_, QString(__PRETTY_FUNCTION__).append(" @ ") \
-                .append(QString(__FILE__).replace(ON_SRC_ROOT, "")).append(":%1").arg(__LINE__))
+        _LOG(_LEVEL_, _MODULE_, _MESSAGE_)
+#define _LOG(_LEVEL_, _MODULE_, _MESSAGE_) \
+    Log(Com::IWStudio::ON::Common::Logger::Level::_LEVEL_, \
+        _MODULE_, _MESSAGE_, QString(__PRETTY_FUNCTION__).append(" @ ") \
+            .append(QString(__FILE__).replace(ON_SRC_ROOT, "")).append(":%1").arg(__LINE__))
 
 namespace Com {
 namespace IWStudio {
@@ -28,9 +30,9 @@ public:
         Info,
         Trace
     };
-    static const QMap<Level, QString> LevelNames;
+    const QMap<Level, QString> LevelNames;
 
-    static QSharedPointer<Logger> & Instance();
+    static const QSharedPointer<Logger> &Instance();
     virtual ~Logger();
 
     void Log(Level level, QString module, QString message, QString location = "");
@@ -42,10 +44,11 @@ protected:
 
 private:
     static QSharedPointer<Logger> _instance;
+
     static QMap<Level, QString> initLevelNames();
 
     QMutex _mutex;
-    QTextStream cout;
+    const QString _logModule;
 
 };
 
