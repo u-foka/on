@@ -10,7 +10,7 @@ namespace Tests {
 TEST(Dummy, DummyTest)
 {
     auto test = new Common::Test();
-    ASSERT_TRUE(test);
+    ASSERT_NE(test, nullptr);
     test->Print("Testing the test class :D");
     delete test;
     test = 0;
