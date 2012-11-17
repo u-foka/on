@@ -2,6 +2,9 @@
 #define COM_IWSTUDIO_ON_COMMON_PROTOCOLFACTORY_H
 
 #include <QSharedPointer>
+#include <QIODevice>
+
+#include "iprotocol.h"
 
 namespace Com {
 namespace IWStudio {
@@ -15,6 +18,8 @@ public:
     const static QSharedPointer<ProtocolFactory> & Instance();
     virtual ~ProtocolFactory();
 
+    IProtocol * CreateProtocol(QIODevice &device);
+
 protected:
     ProtocolFactory();
     ProtocolFactory(ProtocolFactory const&) = delete;
@@ -22,7 +27,6 @@ protected:
 
 private:
     static QSharedPointer<ProtocolFactory> _instance;
-
 
     const QString _logModule;
     const QSharedPointer<Logger> _logger;

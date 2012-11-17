@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "logger.h"
+#include "protocol.h"
 
 namespace Com {
 namespace IWStudio {

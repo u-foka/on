@@ -11,5 +11,8 @@ include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
 aux_source_directory(. SRC_LIST)
+list(APPEND SRC_LIST protocol.h)
+list(APPEND SRC_LIST iprotocol.h)
+
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
