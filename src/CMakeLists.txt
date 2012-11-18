@@ -1,12 +1,17 @@
 project(ON)
 cmake_minimum_required(VERSION 2.8)
 
+set(ON_SOURCE_ROOT_DIR ${PROJECT_SOURCE_DIR})
+
 # Enable C++11
 if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions(-std=gnu++0x)
 endif()
 
-# Define source root directory
+# Defines
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    add_definitions(-DDEBUG)
+endif()
 add_definitions(-DON_SRC_ROOT="${PROJECT_SOURCE_DIR}")
 
 add_subdirectory(common)

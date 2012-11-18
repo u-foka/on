@@ -3,9 +3,11 @@
 
 #include <QTextStream>
 #include <QSharedPointer>
+#include <QVector>
 #include <QMap>
 #include <QString>
 #include <QMutex>
+#include <QFile>
 
 #define LOG(_LEVEL_, _MODULE_, _MESSAGE_) \
     Com::IWStudio::ON::Common::Logger::Instance()-> \
@@ -20,9 +22,15 @@ namespace IWStudio {
 namespace ON {
 namespace Common {
 
+/**
+ * @brief Logger class that writes multiple outputs
+ */
 class Logger
 {
 public:
+    /**
+     * @brief Available log levels
+     */
     enum class Level {
         Fatal,
         Error,
@@ -32,23 +40,75 @@ public:
     };
     const QMap<Level, QString> LevelNames;
 
+    /**
+     * @brief Available file output formats
+     */
+    enum class Format {
+        Plain,
+        Csv,
+        Xml,
+        Html
+    };
+
+    /**
+     * @brief Returns the instance constructed on demand
+     * @return Instance in a QSharedPointer
+     */
     static const QSharedPointer<Logger> &Instance();
     virtual ~Logger();
 
-    void Log(Level level, QString module, QString message, QString location = "");
+    bool GetLogToStdout() const { return _logToStdout; }
+    void SetLogToStdout(bool enabled) { _logToStdout = enabled; }
+    bool GetLogLocationToStdout() const { return _logLocationToStdout; }
+    void SetLogLocationToStdout(bool enabled) { _logLocationToStdout = enabled; }
+
+    QString GetLogFile() const { return _file.fileName(); }
+    void SetLogFile(const QString &fileName);
+    bool GetLogLocationToFile() const { return _logLocationToFile; }
+    void SetLogLocationToFile(bool enabled) { _logLocationToFile = enabled; }
+
+    Format GetLogFormat() const { return _format; }
+    void SetLogFormat(Format format);
+
+    void FlushStartupBuffer();
+
+    /**
+     * @brief Writes out a line to log
+     * @param level Log level of the message
+     * @param module Module identifier of the message
+     * @param message Log message
+     * @param location The function name, source file and line where the log was called
+     */
+    void Log(Level level, const QString &module, const QString &message, const QString &location = "");
 
 protected:
+    struct LogLine {
+        Level level;
+        QString module;
+        QString message;
+        QString location;
+    };
+
     Logger();
     Logger(Logger const&) = delete;
     Logger& operator=(Logger const&) = delete;
+
+    bool _logToStdout;
+    bool _logLocationToStdout;
+    QFile _file;
+    bool _logLocationToFile;
+    Format _format;
 
 private:
     static QSharedPointer<Logger> _instance;
 
     static QMap<Level, QString> initLevelNames();
 
-    QMutex _mutex;
     const QString _logModule;
+
+    QMutex _mutex;
+    bool _startupCompleted;
+    QVector<LogLine> _startupBuffer;
 
 };
 

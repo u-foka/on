@@ -1,9 +1,13 @@
 #include "logger.h"
 
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 #include <QMutexLocker>
 #include <QTextStream>
+
+#include "exception.h"
 
 namespace Com {
 namespace IWStudio {
@@ -35,7 +39,8 @@ QMap<Logger::Level, QString> Logger::initLevelNames()
 }
 
 Logger::Logger()
-    : LevelNames(initLevelNames()), _logModule("Logger")
+    : LevelNames(initLevelNames()), _logToStdout(false), _logLocationToStdout(false), _logLocationToFile(true),
+      _format(Format::Plain), _logModule("Logger"), _mutex(QMutex::Recursive), _startupCompleted(false)
 {
     _LOG(Trace, _logModule, "Created");
 }
@@ -45,18 +50,92 @@ Logger::~Logger()
     _LOG(Trace, _logModule, "Destroyed");
 }
 
-void Logger::Log(Level level, QString module, QString message, QString location)
+void Logger::SetLogFile(const QString &fileName)
+{
+    if (_file.isOpen()) {
+        throw Exception("Log file already open");
+    }
+
+    _file.setFileName(fileName);
+    _file.open(QIODevice::WriteOnly | QIODevice::Append);
+}
+
+void Logger::SetLogFormat(Format format)
+{
+    if (_file.isOpen()) {
+        throw Exception("Log file already open");
+    }
+
+    _format = format;
+}
+
+void Logger::FlushStartupBuffer()
 {
     QMutexLocker locker(&_mutex);
 
-    std::cout << LevelNames[level].toUtf8().constData() << " " <<
-                 module.toUtf8().constData() << " " <<
-                 message.toUtf8().constData();
-    if (! location.isEmpty()) {
-        std::cout << " // " << location.toUtf8().constData();
+    _startupCompleted = true;
+
+    for (auto i = _startupBuffer.begin(); i != _startupBuffer.end(); i++) {
+        Log(i->level, i->module, i->message, i->location);
     }
-    std::cout << std::endl;
-    std::cout.flush();
+}
+
+void Logger::Log(Level level, const QString &module, const QString &message, const QString &location)
+{
+    QMutexLocker locker(&_mutex);
+
+    if (! _startupCompleted) {
+        _startupBuffer.append({
+                level: level,
+                module: module,
+                message: message,
+                location: location
+            });
+
+        return;
+    }
+
+    if (_logToStdout) {
+        using namespace std;
+
+        cout <<
+            setw(10) << left << LevelNames[level].toUtf8().constData() <<
+            setw(20) << left << module.toUtf8().constData() <<
+            message.toUtf8().constData();
+        if (! location.isEmpty() && _logLocationToStdout) {
+            cout << " // " << location.toUtf8().constData();
+        }
+        cout << endl;
+        cout.flush();
+    }
+
+    if (_file.isOpen()) {
+        std::stringstream line;
+
+        switch (_format) {
+        case Format::Plain:
+            using namespace std;
+
+            line <<
+                setw(10) << left << LevelNames[level].toUtf8().constData() <<
+                setw(20) << left << module.toUtf8().constData() <<
+                message.toUtf8().constData();
+            if (! location.isEmpty() && _logLocationToFile) {
+                line << " // " << location.toUtf8().constData();
+            }
+            line << endl;
+
+            break;
+        default:
+            throw Exception("Invalid log format");
+
+            break;
+        }
+
+        std::string lineStr = line.str();
+        _file.write(lineStr.data(), lineStr.length());
+        _file.flush();
+    }
 }
 
 } // namespace Common

@@ -2,6 +2,7 @@
 
 #include <QSharedPointer>
 
+#include "../ONCommon/logger.h"
 #include "../ONCommon/protocolfactory.h"
 
 namespace Com {
@@ -12,6 +13,13 @@ namespace Tests {
 class ProtocolFactory : public ::testing::Test {
 public:
     QSharedPointer<Common::ProtocolFactory> _factory;
+
+    static void SetUpTestCase() {
+#ifdef DEBUG
+        Common::Logger::Instance()->SetLogToStdout(true);
+#endif
+        Common::Logger::Instance()->FlushStartupBuffer();
+    }
 
     virtual void SetUp() override
     {
