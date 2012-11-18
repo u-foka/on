@@ -33,6 +33,7 @@ QMap<Logger::Level, QString> Logger::initLevelNames()
     out[Level::Error] = "Error";
     out[Level::Warning] = "Warning";
     out[Level::Info] = "Info";
+    out[Level::Debug] = "Debug";
     out[Level::Trace] = "Trace";
 
     return out;

@@ -36,6 +36,7 @@ public:
         Error,
         Warning,
         Info,
+        Debug,
         Trace
     };
     const QMap<Level, QString> LevelNames;

@@ -11,9 +11,8 @@ namespace Common {
 
 class IProtocol : public QObject
 {
-public:
     Q_OBJECT
-
+public:
     IProtocol(QObject *parent = 0) : QObject(parent) {}
     virtual ~IProtocol(){}
 

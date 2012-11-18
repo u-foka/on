@@ -12,7 +12,7 @@ namespace Tests {
 
 class ProtocolFactory : public ::testing::Test {
 public:
-    QSharedPointer<Common::ProtocolFactory> _factory;
+    Common::ProtocolFactory _factory;
 
     static void SetUpTestCase() {
 #ifdef DEBUG
@@ -20,11 +20,6 @@ public:
         Common::Logger::Instance()->SetStdoutLogLevel(Common::Logger::Level::Trace);
 #endif
         Common::Logger::Instance()->FlushStartupBuffer();
-    }
-
-    virtual void SetUp() override
-    {
-        _factory = Common::ProtocolFactory::Instance();
     }
 };
 
