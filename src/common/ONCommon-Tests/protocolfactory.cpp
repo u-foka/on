@@ -17,6 +17,7 @@ public:
     static void SetUpTestCase() {
 #ifdef DEBUG
         Common::Logger::Instance()->SetLogToStdout(true);
+        Common::Logger::Instance()->SetStdoutLogLevel(Common::Logger::Level::Trace);
 #endif
         Common::Logger::Instance()->FlushStartupBuffer();
     }

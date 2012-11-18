@@ -14,6 +14,9 @@ class IProtocol : public QObject
 public:
     Q_OBJECT
 
+    IProtocol(QObject *parent = 0) : QObject(parent) {}
+    virtual ~IProtocol(){}
+
     virtual void Attach(QIODevice &device) = 0;
     virtual void Detach() = 0;
 

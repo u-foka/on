@@ -39,8 +39,9 @@ QMap<Logger::Level, QString> Logger::initLevelNames()
 }
 
 Logger::Logger()
-    : LevelNames(initLevelNames()), _logToStdout(false), _logLocationToStdout(false), _logLocationToFile(true),
-      _format(Format::Plain), _logModule("Logger"), _mutex(QMutex::Recursive), _startupCompleted(false)
+    : LevelNames(initLevelNames()), _logToStdout(false), _logLocationToStdout(false), _stdoutLevel(Level::Info),
+      _logLocationToFile(true), _fileLevel(Level::Trace), _format(Format::Plain), _logModule("Logger"),
+      _mutex(QMutex::Recursive), _startupCompleted(false)
 {
     _LOG(Trace, _logModule, "Created");
 }
@@ -95,7 +96,7 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
         return;
     }
 
-    if (_logToStdout) {
+    if (_logToStdout && _stdoutLevel >= level) {
         using namespace std;
 
         cout <<
@@ -109,7 +110,7 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
         cout.flush();
     }
 
-    if (_file.isOpen()) {
+    if (_file.isOpen() && _fileLevel >= level) {
         std::stringstream line;
 
         switch (_format) {

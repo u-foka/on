@@ -61,15 +61,27 @@ public:
     void SetLogToStdout(bool enabled) { _logToStdout = enabled; }
     bool GetLogLocationToStdout() const { return _logLocationToStdout; }
     void SetLogLocationToStdout(bool enabled) { _logLocationToStdout = enabled; }
+    Level GetStdoutLogLevel() const { return _stdoutLevel; }
+    void SetStdoutLogLevel(Level level) { _stdoutLevel = level; }
 
     QString GetLogFile() const { return _file.fileName(); }
     void SetLogFile(const QString &fileName);
     bool GetLogLocationToFile() const { return _logLocationToFile; }
     void SetLogLocationToFile(bool enabled) { _logLocationToFile = enabled; }
+    Level GetFileLogLevel() const { return _fileLevel; }
+    void SetFileLogLevel(Level level) { _fileLevel = level; }
 
     Format GetLogFormat() const { return _format; }
     void SetLogFormat(Format format);
 
+    /**
+     * @brief Writes out the startup buffer and starts immediate logging
+     *
+     * Logger is constructed with all outputs disabled, and buffers the messages
+     * on startup into an internal buffer. After the outputs initialized,
+     * this function should be called to write out the messages from the
+     * startup buffer and starts immediate logging.
+     */
     void FlushStartupBuffer();
 
     /**
@@ -95,8 +107,10 @@ protected:
 
     bool _logToStdout;
     bool _logLocationToStdout;
+    Level _stdoutLevel;
     QFile _file;
     bool _logLocationToFile;
+    Level _fileLevel;
     Format _format;
 
 private:

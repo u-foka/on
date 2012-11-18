@@ -10,9 +10,9 @@ set(QT_USE_QTSQL TRUE)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
-aux_source_directory(. SRC_LIST)
-list(APPEND SRC_LIST protocol.h)
-list(APPEND SRC_LIST iprotocol.h)
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
 
-add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
+add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${HEADERS_MOC})
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
