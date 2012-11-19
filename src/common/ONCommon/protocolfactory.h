@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QIODevice>
+#include <QByteArray>
+#include <QVector>
 
 #include "iprotocol.h"
 
@@ -21,10 +23,16 @@ public:
 
     IProtocol * CreateProtocol(QIODevice &device);
 
+    void RegisterProtocol(IProtocol *proto);
+
 protected:
 
 private:
     const QString _logModule;
+
+    QByteArray _handshakeBuffer;
+    QVector<IProtocol*> _registredProtocols;
+    bool _protocolsSorted;
 
 };
 

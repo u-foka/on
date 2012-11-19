@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "logger.h"
+#include "log.h"
 #include "protocol.h"
 
 namespace Com {
@@ -19,6 +19,16 @@ ProtocolFactory::ProtocolFactory()
 ProtocolFactory::~ProtocolFactory()
 {
     LOG(Trace, _logModule, "Destroyed");
+}
+
+IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device)
+{
+
+}
+
+void ProtocolFactory::RegisterProtocol(IProtocol *proto)
+{
+    _registredProtocols.append(proto);
 }
 
 } // namespace Common

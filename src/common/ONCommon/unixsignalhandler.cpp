@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <sys/socket.h>
 
-#include "logger.h"
+#include "log.h"
 #include "exception.h"
 
 namespace Com {
@@ -31,7 +31,7 @@ UnixSignalHandler::UnixSignalHandler(int signal, QObject *parent) :
     sigemptyset(&sig.sa_mask);
     sig.sa_flags |= SA_RESTART;
 
-    LOG(Debug, _logModule, QString("Setting up handler: %1").arg(strsignal(signal)));
+    LOGS(Debug, _logModule, "Setting up handler: " << strsignal(signal));
     if (sigaction(signal, &sig, 0) > 0)
         throw Exception("Failed to install handler");
 
@@ -57,7 +57,7 @@ void UnixSignalHandler::HandleSignal()
     char tmp;
     ::read(_sigFd[1], &tmp, sizeof(tmp));
 
-    LOG(Trace, _logModule, QString("Cought signal: %1").arg(strsignal(_signal)));
+    LOGS(Trace, _logModule, "Cought signal: " << strsignal(_signal));
     emit CoughtSignal();
 
     _sn->setEnabled(true);

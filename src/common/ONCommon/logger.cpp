@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "log.h"
 
 #include <iostream>
 #include <iomanip>
@@ -138,6 +139,19 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
         _file.write(lineStr.data(), lineStr.length());
         _file.flush();
     }
+}
+
+Logger::Stream::Stream(const QSharedPointer<Logger> &logger, Level level, const QString &module,
+                       const QString &location)
+    : _logger(logger), _level(level), _module(module), _location(location), _line(),
+      _lineStream(&_line, QIODevice::WriteOnly)
+{
+}
+
+Logger::Stream::~Stream()
+{
+    _lineStream.flush();
+    _logger->Log(_level, _module, _line, _location);
 }
 
 } // namespace Common

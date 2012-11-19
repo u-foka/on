@@ -1,21 +1,13 @@
 #ifndef COM_IWSTUDIO_ON_COMMON_LOGGER_H
 #define COM_IWSTUDIO_ON_COMMON_LOGGER_H
 
-#include <QTextStream>
 #include <QSharedPointer>
 #include <QVector>
 #include <QMap>
 #include <QString>
 #include <QMutex>
 #include <QFile>
-
-#define LOG(_LEVEL_, _MODULE_, _MESSAGE_) \
-    Com::IWStudio::ON::Common::Logger::Instance()-> \
-        _LOG(_LEVEL_, _MODULE_, _MESSAGE_)
-#define _LOG(_LEVEL_, _MODULE_, _MESSAGE_) \
-    Log(Com::IWStudio::ON::Common::Logger::Level::_LEVEL_, \
-        _MODULE_, _MESSAGE_, QString(__PRETTY_FUNCTION__).append(" @ ") \
-            .append(QString(__FILE__).replace(ON_SRC_ROOT, "")).append(":%1").arg(__LINE__))
+#include <QTextStream>
 
 namespace Com {
 namespace IWStudio {
@@ -94,6 +86,24 @@ public:
      */
     void Log(Level level, const QString &module, const QString &message, const QString &location = "");
 
+    class Stream {
+    public:
+        Stream(const QSharedPointer<Logger> &logger, Level level, const QString &module, const QString &location = "");
+        virtual ~Stream();
+
+        template<typename T> Stream & operator<<(const T &value);
+
+    private:
+        const QSharedPointer<Logger> _logger;
+        const Level _level;
+        const QString _module;
+        const QString _location;
+
+        QString _line;
+        QTextStream _lineStream;
+
+    };
+
 protected:
     struct LogLine {
         Level level;
@@ -131,5 +141,7 @@ private:
 } // namespace ON
 } // namespace IWStudio
 } // namespace Com
+
+#include "logger_inline.h"
 
 #endif // COM_IWSTUDIO_ON_COMMON_LOGGER_H
