@@ -16,11 +16,15 @@ namespace ON {
 namespace Common {
 
 QSharedPointer<Logger> Logger::_instance;
+QMutex Logger::_instanceMutex;
 
 const QSharedPointer<Logger> & Logger::Instance()
 {
     if (_instance.isNull()) {
-        _instance = QSharedPointer<Logger>(new Logger);
+        QMutexLocker locker(&_instanceMutex);
+        if (_instance.isNull()) {
+            _instance = QSharedPointer<Logger>(new Logger);
+        }
     }
 
     return _instance;

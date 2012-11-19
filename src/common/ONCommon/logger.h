@@ -86,6 +86,13 @@ public:
      */
     void Log(Level level, const QString &module, const QString &message, const QString &location = "");
 
+    /**
+     * @brief Used to easily stream data to the log file
+     *
+     * The constructor stores the logger instance, and the common data, then
+     * the user can stream data into the log line (usually to a temporary instance),
+     * and finally on destruction the line gets written to the log.
+     */
     class Stream {
     public:
         Stream(const QSharedPointer<Logger> &logger, Level level, const QString &module, const QString &location = "");
@@ -126,6 +133,7 @@ protected:
 
 private:
     static QSharedPointer<Logger> _instance;
+    static QMutex _instanceMutex;
 
     static QMap<Level, QString> initLevelNames();
 
