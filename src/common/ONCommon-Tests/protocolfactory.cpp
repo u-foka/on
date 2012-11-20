@@ -7,6 +7,7 @@
 #include "../ONCommon/logger.h"
 #include "../ONCommon/iprotocol.h"
 #include "../ONCommon/protocolfactory.h"
+#include "../ONCommon/exception.h"
 
 namespace Com {
 namespace IWStudio {
@@ -110,6 +111,27 @@ TEST_F(ProtocolFactory, SelectFragmented)
     device.open(QIODevice::ReadOnly);
     EXPECT_EQ(_factory.CreateProtocol(device), (Common::IProtocol*)0x4201);
     EXPECT_EQ(device.read(5), QByteArray("OTHER"));
+    device.close();
+}
+
+TEST_F(ProtocolFactory, ThrowUnmatched)
+{
+    QByteArray data("TEST");
+
+    MockProtocol mock;
+
+    EXPECT_CALL(mock, HandshakeSize()).WillRepeatedly(Return(2));
+
+    EXPECT_CALL(mock, CheckHandshake(QByteArray("TE"))).InSequence(_seq)
+            .WillOnce(Return(nullptr));
+
+    _factory.RegisterProtocol(&mock);
+
+    QBuffer device;
+
+    device.setBuffer(&data);
+    device.open(QIODevice::ReadOnly);
+    EXPECT_THROW(_factory.CreateProtocol(device), Common::Exception);
     device.close();
 }
 
