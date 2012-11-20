@@ -22,15 +22,15 @@ public:
     virtual ~ProtocolFactory();
 
     IProtocol * CreateProtocol(QIODevice &device);
-
     void RegisterProtocol(IProtocol *proto);
 
 protected:
+    void sortProtocols();
+    static bool protocolCmp(IProtocol *a, IProtocol *b);
 
 private:
     const QString _logModule;
 
-    QByteArray _handshakeBuffer;
     QVector<IProtocol*> _registredProtocols;
     bool _protocolsSorted;
 
