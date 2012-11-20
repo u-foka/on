@@ -51,7 +51,7 @@ TEST_F(ProtocolFactory, Construction)
 
 TEST_F(ProtocolFactory, SuccessfullSelection)
 {
-    QByteArray data("TESTDATA1\nOTHER");
+    QByteArray data("TESTDATA1\nOTHER_REMAINING");
 
     MockProtocol mock1;
     MockProtocol mock2;
@@ -73,6 +73,44 @@ TEST_F(ProtocolFactory, SuccessfullSelection)
     device.open(QIODevice::ReadOnly);
     EXPECT_EQ(_factory.CreateProtocol(device), (Common::IProtocol*)0x4201);
     EXPECT_EQ(_factory.CreateProtocol(device), (Common::IProtocol*)0x4202);
+    EXPECT_EQ(device.read(10), QByteArray("_REMAINING"));
+    device.close();
+}
+
+TEST_F(ProtocolFactory, SelectFragmented)
+{
+    QByteArray data1("TEST");
+    QByteArray data2("TESTDATA1\nOTHER");
+
+    MockProtocol mock1;
+    MockProtocol mock2;
+
+    EXPECT_CALL(mock1, HandshakeSize()).WillRepeatedly(Return(2));
+    EXPECT_CALL(mock2, HandshakeSize()).WillRepeatedly(Return(10));
+
+    EXPECT_CALL(mock1, CheckHandshake(QByteArray("TE"))).InSequence(_seq)
+            .WillOnce(Return(nullptr));
+    EXPECT_CALL(mock1, CheckHandshake(QByteArray("TE"))).InSequence(_seq)
+            .WillOnce(Return(nullptr));
+    EXPECT_CALL(mock2, CheckHandshake(QByteArray("TESTDATA1\n"))).InSequence(_seq)
+            .WillOnce(Return((Common::IProtocol*)0x4201));
+
+    _factory.RegisterProtocol(&mock1);
+    _factory.RegisterProtocol(&mock2);
+
+    QBuffer device;
+
+    device.setBuffer(&data1);
+    device.open(QIODevice::ReadOnly);
+    EXPECT_EQ(_factory.CreateProtocol(device), nullptr);
+    EXPECT_EQ(device.read(15), QByteArray("TEST"));
+    device.close();
+
+    device.setBuffer(&data2);
+    device.open(QIODevice::ReadOnly);
+    EXPECT_EQ(_factory.CreateProtocol(device), (Common::IProtocol*)0x4201);
+    EXPECT_EQ(device.read(5), QByteArray("OTHER"));
+    device.close();
 }
 
 } // Tests

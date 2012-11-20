@@ -35,16 +35,18 @@ IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device)
         if (handshakeBuffer.length() < (*i)->HandshakeSize()) {
             int requiredSize = (*i)->HandshakeSize() - handshakeBuffer.length();
             QByteArray readBuffer = device.read(requiredSize);
+            handshakeBuffer.append(readBuffer);
+
             if (readBuffer.length() < requiredSize) {
-                // Revert the read and return nullptr
-                for (auto data = readBuffer.data() + (readBuffer.length() - 1); data > readBuffer.data(); data--) {
-                    device.ungetChar(*data);
+                // Revert the whole read and return nullptr
+                auto buffer = handshakeBuffer.data();
+                int len = handshakeBuffer.length();
+                for (auto pos = buffer + (len-1); pos >= buffer; pos--) {
+                    device.ungetChar(*pos);
                 }
 
                 return nullptr;
             }
-
-            handshakeBuffer.append(readBuffer);
         }
 
         IProtocol *out = (*i)->CheckHandshake(handshakeBuffer);
