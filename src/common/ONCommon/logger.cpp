@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <ctime>
 
 #include <QMutexLocker>
 #include <QTextStream>
@@ -102,10 +103,19 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
         return;
     }
 
+    // date and time to display in log
+    time_t now = time(0);
+    tm    *ltm = localtime(&now);
+    char  dateline[21];
+    strftime(dateline,21,"%Y/%m/%d %H:%M:%S ",ltm);
+    QString datestring = dateline;
+
+
     if (_logToStdout && _stdoutLevel >= level) {
         using namespace std;
 
         cout <<
+            setw(23) << left << datestring.toUtf8().constData() <<
             setw(10) << left << LevelNames[level].toUtf8().constData() <<
             setw(20) << left << module.toUtf8().constData() <<
             message.toUtf8().constData();
@@ -124,6 +134,7 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
             using namespace std;
 
             line <<
+                setw(23) << left << datestring.toUtf8().constData() <<
                 setw(10) << left << LevelNames[level].toUtf8().constData() <<
                 setw(20) << left << module.toUtf8().constData() <<
                 message.toUtf8().constData();
