@@ -34,9 +34,7 @@ int main(int argv, char** argc)
     Common::Logger::Instance()->SetStdoutLogLevel(Common::Logger::Level::Trace);
     Common::Logger::Instance()->SetFileLogLevel(Common::Logger::Level::Trace);
     Common::Logger::Instance()->SetLogFormat(Common::Logger::Format::Csv);
-    if (! Common::Logger::Instance()->SetLogFile(QString(getenv("HOME")).append("/ONServerCore.log"))) {
-        LOG(Warning, _logModule, "Failed to open log file");
-    }
+    Common::Logger::Instance()->SetLogFile(QString(getenv("HOME")).append("/ONServerCore.log"));
     Common::Logger::Instance()->FlushStartupBuffer();
 
     LOG(Info, _logModule, "ON Server Startup Complete");

@@ -65,7 +65,14 @@ bool Logger::SetLogFile(const QString &fileName)
     }
 
     _file.setFileName(fileName);
-    return _file.open(QIODevice::WriteOnly | QIODevice::Append);
+    bool success = _file.open(QIODevice::WriteOnly | QIODevice::Append);
+
+    if (! success) {
+        _LOGS(_instance, Warning, _logModule, "Failed to open log file: " << _file.errorString()
+              << " (filename: " << _file.fileName() << ")");
+    }
+
+    return success;
 }
 
 void Logger::SetLogFormat(Format format)
