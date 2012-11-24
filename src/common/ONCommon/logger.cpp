@@ -106,8 +106,8 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
     // date and time to display in log
     time_t now = time(0);
     tm    *ltm = localtime(&now);
-    char  dateline[21];
-    strftime(dateline,21,"%Y/%m/%d %H:%M:%S ",ltm);
+    char  dateline[20];
+    strftime(dateline,20,"%Y/%m/%d %H:%M:%S",ltm);
     QString datestring = dateline;
 
 
@@ -140,6 +140,20 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
                 message.toUtf8().constData();
             if (! location.isEmpty() && _logLocationToFile) {
                 line << " // " << location.toUtf8().constData();
+            }
+            line << endl;
+
+            break;
+        case Format::Csv:
+            using namespace std;
+
+            line <<
+                "\"" << datestring.toUtf8().constData() << "\"," <<
+                "\"" << LevelNames[level].toUtf8().constData() << "\"," <<
+                "\"" << module.toUtf8().constData() << "\"," <<
+                "\"" << message.toUtf8().constData() << "\"";
+            if (! location.isEmpty() && _logLocationToFile) {
+                line << ",\"" << location.toUtf8().constData() << "\"";
             }
             line << endl;
 
