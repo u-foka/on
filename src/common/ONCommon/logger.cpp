@@ -108,7 +108,7 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
     tm    *ltm = localtime(&now);
     char  dateline[20];
     strftime(dateline,20,"%Y/%m/%d %H:%M:%S",ltm);
-    QString datestring = dateline;
+    QString datestring = QString::fromLocal8Bit(dateline);
 
     if (_logToStdout && _stdoutLevel >= level) {
         using namespace std;
