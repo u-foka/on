@@ -5,7 +5,7 @@
 #include <QCoreApplication>
 
 #include <ONCommon/log.h>
-#include <ONCommon/unixsignalhandler.h>
+#include <ONCommonPosix/unixsignalhandler.h>
 
 const char *_logModule = "Main";
 

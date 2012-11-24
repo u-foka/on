@@ -4,8 +4,8 @@
 #include <signal.h>
 #include <sys/socket.h>
 
-#include "log.h"
-#include "exception.h"
+#include <ONCommon/log.h>
+#include <ONCommon/exception.h>
 
 namespace Com {
 namespace IWStudio {
