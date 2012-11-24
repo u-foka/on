@@ -58,7 +58,7 @@ public:
     void SetStdoutLogLevel(Level level) { _stdoutLevel = level; }
 
     QString GetLogFile() const { return _file.fileName(); }
-    void SetLogFile(const QString &fileName);
+    bool SetLogFile(const QString &fileName);
     bool GetLogLocationToFile() const { return _logLocationToFile; }
     void SetLogLocationToFile(bool enabled) { _logLocationToFile = enabled; }
     Level GetFileLogLevel() const { return _fileLevel; }

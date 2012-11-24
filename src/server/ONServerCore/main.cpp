@@ -32,9 +32,10 @@ int main(int argv, char** argc)
 
     Common::Logger::Instance()->SetLogToStdout(true);
     Common::Logger::Instance()->SetStdoutLogLevel(Common::Logger::Level::Trace);
-    Common::Logger::Instance()->FlushStartupBuffer();
+    Common::Logger::Instance()->SetFileLogLevel(Common::Logger::Level::Trace);
     Common::Logger::Instance()->SetLogFormat(Common::Logger::Format::Csv);
-    Common::Logger::Instance()->SetLogFile("~/test.log");
+    Common::Logger::Instance()->SetLogFile(QString(getenv("HOME")).append("/ONServerCore.log"));
+    Common::Logger::Instance()->FlushStartupBuffer();
 
     LOG(Info, _logModule, "ON Server Startup Complete");
     return app.exec();

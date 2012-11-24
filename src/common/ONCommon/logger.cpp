@@ -58,14 +58,14 @@ Logger::~Logger()
     _LOG(Trace, _logModule, "Destroyed");
 }
 
-void Logger::SetLogFile(const QString &fileName)
+bool Logger::SetLogFile(const QString &fileName)
 {
     if (_file.isOpen()) {
         throw Exception("Log file already open");
     }
 
     _file.setFileName(fileName);
-    _file.open(QIODevice::WriteOnly | QIODevice::Append);
+    return _file.open(QIODevice::WriteOnly | QIODevice::Append);
 }
 
 void Logger::SetLogFormat(Format format)
