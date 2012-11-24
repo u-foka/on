@@ -114,7 +114,7 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
         using namespace std;
 
         cout <<
-            setw(23) << left << dateline <<
+            setw(23) << left << datestring.toUtf8().constData() <<
             setw(10) << left << LevelNames[level].toUtf8().constData() <<
             setw(20) << left << module.toUtf8().constData() <<
             message.toUtf8().constData();
@@ -133,7 +133,7 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
             using namespace std;
 
             line <<
-                setw(23) << left << dateline <<
+                setw(23) << left << datestring.toUtf8().constData() <<
                 setw(10) << left << LevelNames[level].toUtf8().constData() <<
                 setw(20) << left << module.toUtf8().constData() <<
                 message.toUtf8().constData();
