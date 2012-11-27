@@ -37,11 +37,9 @@ public:
         virtual ~MockProtocol(){};
 
         MOCK_CONST_METHOD0(HandshakeSize, int ());
-        MOCK_CONST_METHOD1(CheckHandshake, Common::IProtocol * (QByteArray));
-        MOCK_METHOD1(Attach, void (QIODevice &device));
+        MOCK_CONST_METHOD1(ConstructIfSuitable, Common::IProtocol * (QByteArray));
+        MOCK_METHOD1(Attach, void (QIODevice *device));
         MOCK_METHOD0(Detach, void ());
-        MOCK_METHOD0(DataAvailable, void ());
-        MOCK_METHOD0(DataSent, void ());
     };
 };
 
@@ -60,11 +58,11 @@ TEST_F(ProtocolFactory, SuccessfullSelection)
     EXPECT_CALL(mock1, HandshakeSize()).WillRepeatedly(Return(10));
     EXPECT_CALL(mock2, HandshakeSize()).WillRepeatedly(Return(5));
 
-    EXPECT_CALL(mock2, CheckHandshake(QByteArray("TESTD"))).InSequence(_seq)
+    EXPECT_CALL(mock2, ConstructIfSuitable(QByteArray("TESTD"))).InSequence(_seq)
             .WillOnce(Return(nullptr));
-    EXPECT_CALL(mock1, CheckHandshake(QByteArray("TESTDATA1\n"))).InSequence(_seq)
+    EXPECT_CALL(mock1, ConstructIfSuitable(QByteArray("TESTDATA1\n"))).InSequence(_seq)
             .WillOnce(Return((Common::IProtocol*)0x4201));
-    EXPECT_CALL(mock2, CheckHandshake(QByteArray("OTHER"))).InSequence(_seq)
+    EXPECT_CALL(mock2, ConstructIfSuitable(QByteArray("OTHER"))).InSequence(_seq)
             .WillOnce(Return((Common::IProtocol*)0x4202));
 
     _factory.RegisterProtocol(&mock1);
@@ -89,11 +87,11 @@ TEST_F(ProtocolFactory, SelectFragmented)
     EXPECT_CALL(mock1, HandshakeSize()).WillRepeatedly(Return(2));
     EXPECT_CALL(mock2, HandshakeSize()).WillRepeatedly(Return(10));
 
-    EXPECT_CALL(mock1, CheckHandshake(QByteArray("TE"))).InSequence(_seq)
+    EXPECT_CALL(mock1, ConstructIfSuitable(QByteArray("TE"))).InSequence(_seq)
             .WillOnce(Return(nullptr));
-    EXPECT_CALL(mock1, CheckHandshake(QByteArray("TE"))).InSequence(_seq)
+    EXPECT_CALL(mock1, ConstructIfSuitable(QByteArray("TE"))).InSequence(_seq)
             .WillOnce(Return(nullptr));
-    EXPECT_CALL(mock2, CheckHandshake(QByteArray("TESTDATA1\n"))).InSequence(_seq)
+    EXPECT_CALL(mock2, ConstructIfSuitable(QByteArray("TESTDATA1\n"))).InSequence(_seq)
             .WillOnce(Return((Common::IProtocol*)0x4201));
 
     _factory.RegisterProtocol(&mock1);
@@ -122,7 +120,7 @@ TEST_F(ProtocolFactory, ThrowUnmatched)
 
     EXPECT_CALL(mock, HandshakeSize()).WillRepeatedly(Return(2));
 
-    EXPECT_CALL(mock, CheckHandshake(QByteArray("TE"))).InSequence(_seq)
+    EXPECT_CALL(mock, ConstructIfSuitable(QByteArray("TE"))).InSequence(_seq)
             .WillOnce(Return(nullptr));
 
     _factory.RegisterProtocol(&mock);

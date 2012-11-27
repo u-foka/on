@@ -30,18 +30,11 @@ public:
      * @return A new configured instance of this protocol for this handshake if it
      *         matches or nullptr if not.
      */
-    virtual IProtocol * CheckHandshake(QByteArray data) const = 0;
+    virtual IProtocol * ConstructIfSuitable(const QByteArray data) const = 0;
 
-    virtual void Attach(QIODevice &device) = 0;
+    virtual void Attach(QIODevice *device) = 0;
     virtual void Detach() = 0;
 
-public slots:
-    virtual void DataAvailable() = 0;
-    virtual void DataSent() = 0;
-
-signals:
-    void PacketReceived();
-    void PacketSent();
 
 };
 

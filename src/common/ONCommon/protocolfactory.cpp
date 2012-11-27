@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "log.h"
-#include "protocol.h"
 #include "exception.h"
 #include "quicksort.h"
 
@@ -49,8 +48,9 @@ IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device)
             }
         }
 
-        IProtocol *out = (*i)->CheckHandshake(handshakeBuffer);
+        IProtocol *out = (*i)->ConstructIfSuitable(handshakeBuffer);
         if (out) {
+            out->Attach(&device);
             return out;
         }
     }
