@@ -22,7 +22,7 @@ ProtocolFactory::~ProtocolFactory()
     LOG(Trace, _logModule, "Destroyed");
 }
 
-IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device)
+IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device, QObject *parent)
 {
     if (!_protocolsSorted) {
         sortProtocols();
@@ -48,9 +48,11 @@ IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device)
             }
         }
 
-        IProtocol *out = (*i)->ConstructIfSuitable(handshakeBuffer);
+        IProtocol *out = (*i)->ConstructIfSuitable(handshakeBuffer, parent);
         if (out) {
-            out->Attach(&device);
+            // Let the caller to attach te device, to give it time to setup
+            // it's signal handlers before attach
+            //out->Attach(&device);
             return out;
         }
     }

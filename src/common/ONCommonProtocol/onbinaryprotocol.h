@@ -3,6 +3,8 @@
 
 #include "ionprotocol.h"
 
+#include <QByteArray>
+
 class QIODevice;
 
 namespace Com {
@@ -17,10 +19,22 @@ public:
     explicit ONBinaryProtocol(QObject *parent = 0);
 
     virtual int HandshakeSize() const override;
-    virtual IProtocol * ConstructIfSuitable(const QByteArray data) const override;
+    virtual IProtocol * ConstructIfSuitable(const QByteArray &data, QObject *parent = 0) const override;
 
     virtual void Attach(QIODevice *device) override;
     virtual void Detach() override;
+
+    struct BinaryPacketHeader
+    {
+        uint32_t Message;
+        uint32_t MessageLength; ///< @brief Length of the message EXCLUDING the header
+    };
+
+    struct BinaryArgumentHeader
+    {
+        uint32_t Argument;
+        uint32_t ArgumentLength; ///< @brief Length of the argument EXCLUDING the header
+    };
     
 signals:
 
@@ -30,9 +44,14 @@ private slots:
     void dataAvailable();
 
 private:
+
     static const int MajorVersion;
 
     QIODevice *_device;
+    QByteArray _buffer;
+    ONPacket _currentPacket;
+
+    void parseBuffer();
     
 };
 

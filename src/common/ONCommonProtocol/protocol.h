@@ -20,7 +20,7 @@ enum class Type : char {
 
 struct Handshake {
     char Magic[2];       // "ON"
-    char ProtocolType;   //
+    Type ProtocolType;   //
     char Space;          // ' '
     char MajorVersion[3];//
     char Dot;            // '.'
@@ -41,7 +41,15 @@ enum class Message : uint32_t {
 
 };
 
-extern const char* TextMessage[];
+extern const char *TextMessage[];
+
+enum class MessageArgument : uint32_t {
+    Invalid = 0,
+// Available from 1.000
+    SecurityMode
+};
+
+extern const char *TextMessageArgument[];
 
 } // namespace Protocol
 } // namespace Common

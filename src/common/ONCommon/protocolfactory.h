@@ -14,14 +14,14 @@ namespace IWStudio {
 namespace ON {
 namespace Common {
 
-class ProtocolFactory : QObject
+class ProtocolFactory : public QObject
 {
     Q_OBJECT
 public:
     ProtocolFactory();
     virtual ~ProtocolFactory();
 
-    IProtocol * CreateProtocol(QIODevice &device);
+    IProtocol * CreateProtocol(QIODevice &device, QObject *parent = 0);
     void RegisterProtocol(IProtocol *proto);
 
 protected:

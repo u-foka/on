@@ -10,9 +10,15 @@ set(QT_USE_GUI FALSE)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
-aux_source_directory(. SRC_LIST)
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+include_directories(${ON_SOURCE_ROOT_DIR}/common)
+
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
+
+qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${HEADERS_MOC})
 target_link_libraries(${PROJECT_NAME} ONCommon)
+target_link_libraries(${PROJECT_NAME} ONCommonProtocol)
 target_link_libraries(${PROJECT_NAME} gtest)
 target_link_libraries(${PROJECT_NAME} gmock)
 target_link_libraries(${PROJECT_NAME} gmock_main)

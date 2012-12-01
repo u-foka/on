@@ -88,6 +88,10 @@ void Logger::FlushStartupBuffer()
 {
     QMutexLocker locker(&_mutex);
 
+    if (_startupCompleted) {
+        return;
+    }
+
     _startupCompleted = true;
 
     for (auto i = _startupBuffer.begin(); i != _startupBuffer.end(); i++) {

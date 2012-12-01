@@ -2,11 +2,11 @@
 #define COM_IWSTUDIO_ON_COMMON_IONPROTOCOL_H
 
 #include <QObject>
-#include <QMap>
 
 #include <ONCommon/iprotocol.h>
 
 #include "protocol.h"
+#include "onpacket.h"
 
 class QByteArray;
 class QIODevice;
@@ -16,12 +16,6 @@ namespace IWStudio {
 namespace ON {
 namespace Common {
 
-struct ONPacket {
-    Protocol::Message Message;
-    QMap<QString, QByteArray> Arguments;
-
-};
-
 class IONProtocol : public IProtocol
 {
     Q_OBJECT
@@ -30,7 +24,7 @@ public:
     virtual ~IONProtocol(){}
 
 signals:
-    void PacketReceived(ONPacket packet);
+    void PacketReceived(const ONPacket &packet);
     void PacketSent();
 
 };
