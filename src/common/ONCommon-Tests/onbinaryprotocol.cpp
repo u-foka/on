@@ -220,7 +220,86 @@ TEST_F(ONBinaryProtocol, DetectInvalidHeader)
     EXPECT_NE(dynamic_cast<Common::ONBinaryProtocol*>(proto), nullptr);
     delete proto;
     device.close();
+}
 
+TEST_F(ONBinaryProtocol, PreventBufferUnderrun)
+{
+    QBuffer device;
+    QByteArray data1(
+        "ONB 001.000\n"
+
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x06"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x06"
+        "DIGEST"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x04"
+        "NTLM"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x08"
+        "KERBEROS"
+
+        , 62
+    );
+    QByteArray data2(
+        "ONB 001.000\n"
+
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x0B"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x06"
+        "DIGEST"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x04"
+        "NTLM"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x08"
+        "KERBEROS"
+
+        , 62
+    );
+    QByteArray data3(
+        "ONB 001.000\n"
+
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x0E"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x06"
+        "DIGEST"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x04"
+        "NTLM"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x08"
+        "KERBEROS"
+
+        , 62
+    );
+
+    device.setBuffer(&data1);
+    device.open(QIODevice::ReadOnly);
+    auto proto = reinterpret_cast<Common::IONProtocol*>(_factory.CreateProtocol(device));
+    ASSERT_NE(proto, nullptr);
+    EXPECT_THROW(proto->Attach(&device), Common::Exception);
+    delete proto;
+    device.close();
+
+    device.setBuffer(&data2);
+    device.open(QIODevice::ReadOnly);
+    proto = reinterpret_cast<Common::IONProtocol*>(_factory.CreateProtocol(device));
+    ASSERT_NE(proto, nullptr);
+    EXPECT_THROW(proto->Attach(&device), Common::Exception);
+    delete proto;
+    device.close();
+
+    device.setBuffer(&data3);
+    device.open(QIODevice::ReadOnly);
+    proto = reinterpret_cast<Common::IONProtocol*>(_factory.CreateProtocol(device));
+    ASSERT_NE(proto, nullptr);
+    EXPECT_THROW(proto->Attach(&device), Common::Exception);
+    delete proto;
+    device.close();
 }
 
 } // Tests
