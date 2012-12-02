@@ -49,11 +49,15 @@ void ONBinaryProtocol::Attach(QIODevice *device)
     parseBuffer();
 }
 
-void ONBinaryProtocol::Detach()
+void ONBinaryProtocol::Detach(bool keepBuffer)
 {
     disconnect(this, SLOT(dataAvailable()));
 
     _device = nullptr;
+
+    if (! keepBuffer) {
+        _buffer.clear();
+    }
 }
 
 void ONBinaryProtocol::dataAvailable()

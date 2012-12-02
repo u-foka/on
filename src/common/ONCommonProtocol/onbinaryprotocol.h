@@ -22,7 +22,7 @@ public:
     virtual IProtocol * ConstructIfSuitable(const QByteArray &data, QObject *parent = 0) const override;
 
     virtual void Attach(QIODevice *device) override;
-    virtual void Detach() override;
+    virtual void Detach(bool keepBuffer = false) override;
 
     struct BinaryPacketHeader
     {

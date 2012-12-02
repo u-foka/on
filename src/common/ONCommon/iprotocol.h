@@ -34,7 +34,7 @@ public:
     virtual IProtocol * ConstructIfSuitable(const QByteArray &data, QObject *parent = 0) const = 0;
 
     virtual void Attach(QIODevice *device) = 0;
-    virtual void Detach() = 0;
+    virtual void Detach(bool keepBuffer = false) = 0;
 
 
 };

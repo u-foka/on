@@ -40,7 +40,7 @@ public:
         MOCK_CONST_METHOD0(HandshakeSize, int ());
         MOCK_CONST_METHOD2(ConstructIfSuitable, Common::IProtocol * (const QByteArray &, QObject *));
         MOCK_METHOD1(Attach, void (QIODevice *device));
-        MOCK_METHOD0(Detach, void ());
+        MOCK_METHOD1(Detach, void (bool keepBuffer));
     };
 };
 

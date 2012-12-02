@@ -52,27 +52,27 @@ TEST_F(ONBinaryProtocol, Construction)
 TEST_F(ONBinaryProtocol, Parse)
 {
     QByteArray data(
-                "ONB 001.000\n"
+        "ONB 001.000\n"
 
-                "\x00\x00\x00\x01"
-                "\x00\x00\x00\x2A"
-                "\x00\x00\x00\x01"
-                "\x00\x00\x00\x06"
-                "DIGEST"
-                "\x00\x00\x00\x01"
-                "\x00\x00\x00\x04"
-                "NTLM"
-                "\x00\x00\x00\x01"
-                "\x00\x00\x00\x08"
-                "KERBEROS"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x2A"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x06"
+        "DIGEST"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x04"
+        "NTLM"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x08"
+        "KERBEROS"
 
-                "\x00\x00\x00\x02"
-                "\x00\x00\x00\x0E"
-                "\x00\x00\x00\x01"
-                "\x00\x00\x00\x06"
-                "DIGEST"
+        "\x00\x00\x00\x02"
+        "\x00\x00\x00\x0E"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x06"
+        "DIGEST"
 
-                , 84
+        , 84
     );
 
     QBuffer device(&data);
@@ -95,7 +95,69 @@ TEST_F(ONBinaryProtocol, Parse)
     packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("DIGEST", 6));
     EXPECT_CALL(receiver, PacketReceivedMock(packet)).InSequence(_seq);
 
-    QObject::connect(proto, SIGNAL(PacketReceived(const ONPacket &)), &receiver, SLOT(PacketReceived(const ONPacket &)));
+    QObject::connect(proto, SIGNAL(PacketReceived(const ONPacket &)),
+                     &receiver, SLOT(PacketReceived(const ONPacket &)));
+    proto->Attach(&device);
+
+    delete proto;
+
+    device.close();
+}
+
+TEST_F(ONBinaryProtocol, ParseFragmanted)
+{
+    QByteArray data0(
+        "ONB 001.000\n"
+        , 12
+    );
+    QByteArray data1(
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x2A"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x06"
+
+        , 16
+    );
+    QByteArray data2(
+        "DIGEST"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x04"
+        "NTLM"
+        "\x00\x00\x00\x01"
+        "\x00\x00\x00\x08"
+        "KERBEROS"
+
+        , 34
+    );
+
+    QByteArray data;
+    QBuffer device;
+
+    data.append(data0).append(data1);
+    device.setBuffer(&data);
+    device.open(QIODevice::ReadOnly);
+
+    auto proto = reinterpret_cast<Common::IONProtocol*>(_factory.CreateProtocol(device));
+    ASSERT_NE(proto, nullptr);
+
+    MockONPacketReceiver receiver;
+
+    ONPacket packet;
+    packet.Message = Message::AvailableSecurityModes;
+    packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("DIGEST", 6));
+    packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("NTLM", 4));
+    packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("KERBEROS", 8));
+    EXPECT_CALL(receiver, PacketReceivedMock(packet)).InSequence(_seq);
+
+    QObject::connect(proto, SIGNAL(PacketReceived(const ONPacket &)),
+                     &receiver, SLOT(PacketReceived(const ONPacket &)));
+    proto->Attach(&device);
+
+    proto->Detach(true); // Keeps the buffer
+    device.close();
+    data.clear();
+    data.append(data2);
+    device.open(QIODevice::ReadOnly);
     proto->Attach(&device);
 
     delete proto;
