@@ -83,17 +83,17 @@ TEST_F(ONBinaryProtocol, Parse)
 
     MockONPacketReceiver receiver;
 
-    ONPacket packet1;
-    packet1.Message = Message::AvailableSecurityModes;
-    packet1.Arguments.insert(MessageArgument::SecurityMode, QByteArray("DIGEST", 6));
-    packet1.Arguments.insert(MessageArgument::SecurityMode, QByteArray("NTLM", 4));
-    packet1.Arguments.insert(MessageArgument::SecurityMode, QByteArray("KERBEROS", 8));
-    EXPECT_CALL(receiver, PacketReceivedMock(packet1)).InSequence(_seq);
+    ONPacket packet;
+    packet.Message = Message::AvailableSecurityModes;
+    packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("DIGEST", 6));
+    packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("NTLM", 4));
+    packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("KERBEROS", 8));
+    EXPECT_CALL(receiver, PacketReceivedMock(packet)).InSequence(_seq);
 
-    ONPacket packet2;
-    packet2.Message = Message::SelectSecurityMode;
-    packet2.Arguments.insert(MessageArgument::SecurityMode, QByteArray("DIGEST", 6));
-    EXPECT_CALL(receiver, PacketReceivedMock(packet2)).InSequence(_seq);
+    packet.Arguments.clear();
+    packet.Message = Message::SelectSecurityMode;
+    packet.Arguments.insert(MessageArgument::SecurityMode, QByteArray("DIGEST", 6));
+    EXPECT_CALL(receiver, PacketReceivedMock(packet)).InSequence(_seq);
 
     QObject::connect(proto, SIGNAL(PacketReceived(const ONPacket &)), &receiver, SLOT(PacketReceived(const ONPacket &)));
     proto->Attach(&device);
