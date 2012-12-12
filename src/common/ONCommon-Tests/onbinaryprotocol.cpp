@@ -302,6 +302,32 @@ TEST_F(ONBinaryProtocol, PreventBufferUnderrun)
     device.close();
 }
 
+TEST_F(ONBinaryProtocol, NoInvalidPacketOnEmptyBuffer)
+{
+    QByteArray data(
+        "ONB 001.000\n"
+        , 12
+    );
+
+    QBuffer device(&data);
+    device.open(QIODevice::ReadOnly);
+
+    auto proto = reinterpret_cast<Common::IONProtocol*>(_factory.CreateProtocol(device));
+    ASSERT_NE(proto, nullptr);
+
+    MockONPacketReceiver receiver;
+    EXPECT_CALL(receiver, PacketReceivedMock(_)).Times(0); // Expect no calls
+
+    QObject::connect(proto, SIGNAL(PacketReceived(const ONPacket &)),
+                     &receiver, SLOT(PacketReceived(const ONPacket &)));
+
+    proto->Attach(&device);
+
+    delete proto;
+
+    device.close();
+}
+
 } // Tests
 } // ON
 } // IWStudio

@@ -67,6 +67,9 @@ void ONBinaryProtocol::dataAvailable()
 
 void ONBinaryProtocol::parseBuffer()
 {
+    if (_buffer.length() < 1)
+        return;
+
     const char *data = _buffer.constData();
     const char *bufferEnd = data + _buffer.length();
 

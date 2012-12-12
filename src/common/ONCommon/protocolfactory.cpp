@@ -1,6 +1,7 @@
 #include "protocolfactory.h"
 
-#include <iostream>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 #include "log.h"
 #include "exception.h"
@@ -11,8 +12,10 @@ namespace IWStudio {
 namespace ON {
 namespace Common {
 
-ProtocolFactory::ProtocolFactory()
-    : _logModule("ProtocolFactory"), _protocolsSorted(true)
+const QString ProtocolFactory::_logModule("ProtocolFactory");
+
+ProtocolFactory::ProtocolFactory(QObject *parent)
+    : QObject(parent), _protocolsSorted(true)
 {
     LOG(Trace, _logModule, "Created");
 }
@@ -22,10 +25,14 @@ ProtocolFactory::~ProtocolFactory()
     LOG(Trace, _logModule, "Destroyed");
 }
 
-IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device, QObject *parent)
+IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device, QObject *parent) const
 {
+    QReadLocker locker(&_lock);
+
     if (!_protocolsSorted) {
+        locker.unlock(); // Since QReadWriteLock can't be locked recursively in different modes
         sortProtocols();
+        locker.relock();
     }
 
     QByteArray handshakeBuffer;
@@ -63,12 +70,16 @@ IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device, QObject *parent)
 
 void ProtocolFactory::RegisterProtocol(IProtocol *proto)
 {
+    QWriteLocker locker(&_lock);
+
     _registredProtocols.append(proto);
     _protocolsSorted = false;
 }
 
-void ProtocolFactory::sortProtocols()
+void ProtocolFactory::sortProtocols() const
 {
+    QWriteLocker locker(&_lock);
+
     Algorithm::QuickSort(_registredProtocols, &protocolCmp);
     _protocolsSorted = true;
 }

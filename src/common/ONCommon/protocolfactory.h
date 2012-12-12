@@ -6,6 +6,7 @@
 #include <QIODevice>
 #include <QByteArray>
 #include <QVector>
+#include <QReadWriteLock>
 
 #include "iprotocol.h"
 
@@ -18,21 +19,22 @@ class ProtocolFactory : public QObject
 {
     Q_OBJECT
 public:
-    ProtocolFactory();
+    explicit ProtocolFactory(QObject *parent = 0);
     virtual ~ProtocolFactory();
 
-    IProtocol * CreateProtocol(QIODevice &device, QObject *parent = 0);
+    IProtocol * CreateProtocol(QIODevice &device, QObject *parent = 0) const;
     void RegisterProtocol(IProtocol *proto);
 
 protected:
-    void sortProtocols();
+    void sortProtocols() const;
     static bool protocolCmp(IProtocol *a, IProtocol *b);
 
 private:
-    const QString _logModule;
+    static const QString _logModule;
 
-    QVector<IProtocol*> _registredProtocols;
-    bool _protocolsSorted;
+    mutable QReadWriteLock _lock;
+    mutable QVector<IProtocol*> _registredProtocols;
+    mutable bool _protocolsSorted;
 
 };
 
