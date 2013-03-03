@@ -10,6 +10,10 @@ CommandInterface::CommandInterface(QObject *parent) :
 {
 }
 
+CommandInterface::~CommandInterface()
+{
+}
+
 void CommandInterface::ProcessCommand(QString command)
 {
     if (command.compare("exit", Qt::CaseInsensitive) == 0 ||

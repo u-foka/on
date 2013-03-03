@@ -13,6 +13,7 @@ class CommandInterface : public QObject
     Q_OBJECT
 public:
     explicit CommandInterface(QObject *parent = 0);
+    virtual ~CommandInterface();
     
 signals:
     void Quit();

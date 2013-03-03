@@ -6,6 +6,8 @@
 #include <ONCommon/exception.h>
 #include <ONCommonProtocol/ionprotocol.h>
 
+#include "application.h"
+
 namespace Com {
 namespace IWStudio {
 namespace ON {
@@ -19,6 +21,10 @@ ConnectionHandler::ConnectionHandler(const Common::ProtocolFactory &protocolFact
                                      QObject *parent)
     : QObject(parent), _protocolFactory(protocolFactory), _socketDescriptor(socketDescriptor)
 {
+    LOG(Trace, _logModule, "Creating");
+
+    _loop.connect(Application::instance(), SIGNAL(aboutToQuit()), SLOT(quit()));
+
     LOG(Trace, _logModule, "Created");
 }
 
@@ -45,7 +51,9 @@ void ConnectionHandler::run()
     if (_socket.state() != QAbstractSocket::UnconnectedState) {
         LOG(Trace, _logModule, "Closing socket");
         _socket.disconnectFromHost();
-        _socket.waitForDisconnected();
+        if (_socket.state() != QAbstractSocket::UnconnectedState) {
+            _socket.waitForDisconnected();
+        }
     }
 
     LOG(Trace, _logModule, "Finished");

@@ -1,3 +1,5 @@
+#include "application.h"
+
 #include <cstdlib>
 #include <iostream>
 #include <signal.h>
@@ -11,34 +13,45 @@
 #include "commandinterface.h"
 #include "readline.h"
 
-const char *_logModule = "Main";
+namespace Com {
+namespace IWStudio {
+namespace ON {
+namespace ServerCore {
 
-int main(int argv, char** argc)
+const QString Application::_logModule = "Application";
+
+Application::Application(int &argc, char **argv) :
+    QCoreApplication(argc, argv)
 {
-    using namespace Com::IWStudio::ON;
+}
 
+Application::~Application()
+{
+}
+
+int Application::run()
+{
     LOG(Info, _logModule, "ON Server Starting Up...");
-    QCoreApplication::setApplicationName("ONCoreServer");
-    QCoreApplication::setApplicationVersion("0.0.1");
-    QCoreApplication::setOrganizationName("IWStudio");
-    QCoreApplication::setOrganizationDomain("iwstudio.hu");
-
-    QCoreApplication app(argv, argc);
+    setApplicationName("ONCoreServer");
+    setApplicationVersion("0.0.1");
+    setOrganizationName("IWStudio");
+    setOrganizationDomain("iwstudio.hu");
 
     LOG(Info, _logModule, "Installing signal handlers");
-    app.connect(new Common::UnixSignalHandler(SIGHUP, &app),
-                SIGNAL(CoughtSignal()), SLOT(quit()));
-    app.connect(new Common::UnixSignalHandler(SIGINT, &app),
-                SIGNAL(CoughtSignal()), SLOT(quit()));
-    app.connect(new Common::UnixSignalHandler(SIGQUIT, &app),
-                SIGNAL(CoughtSignal()), SLOT(quit()));
-    app.connect(new Common::UnixSignalHandler(SIGTERM, &app),
-                SIGNAL(CoughtSignal()), SLOT(quit()));
+    connect(new Common::UnixSignalHandler(SIGHUP, this),
+            SIGNAL(CoughtSignal()), SLOT(quit()));
+    connect(new Common::UnixSignalHandler(SIGINT, this),
+            SIGNAL(CoughtSignal()), SLOT(quit()));
+    connect(new Common::UnixSignalHandler(SIGQUIT, this),
+            SIGNAL(CoughtSignal()), SLOT(quit()));
+    connect(new Common::UnixSignalHandler(SIGTERM, this),
+            SIGNAL(CoughtSignal()), SLOT(quit()));
 
     LOG(Info, _logModule, "Parsing commandline arguments");
 
     LOG(Info, _logModule, "Loading config file");
 
+    LOG(Info, _logModule, "Setting up logger");
     Common::Logger::Instance()->SetLogToStdout(true);
     Common::Logger::Instance()->SetStdoutLogLevel(Common::Logger::Level::Trace);
     Common::Logger::Instance()->SetFileLogLevel(Common::Logger::Level::Trace);
@@ -48,7 +61,7 @@ int main(int argv, char** argc)
 
     LOG(Info, _logModule, "Setting up command interface");
     ServerCore::CommandInterface commander;
-    app.connect(&commander, SIGNAL(Quit()), SLOT(quit()));
+    connect(&commander, SIGNAL(Quit()), SLOT(quit()));
 
     LOG(Info, _logModule, "Starting Readline");
     ServerCore::Readline readline("on> ");
@@ -56,7 +69,7 @@ int main(int argv, char** argc)
                      Qt::DirectConnection);
     readline.connect(Common::Logger::Instance().data(), SIGNAL(AfterLogLine()), SLOT(Enable()),
                      Qt::DirectConnection);
-    app.connect(&readline, SIGNAL(EndSignal()), SLOT(quit()));
+    connect(&readline, SIGNAL(EndSignal()), SLOT(quit()));
     commander.connect(&readline, SIGNAL(LineRead(QString)), SLOT(ProcessCommand(QString)));
 
     LOG(Info, _logModule, "Start listening");
@@ -64,7 +77,7 @@ int main(int argv, char** argc)
     listener.listen(3214);
 
     LOG(Info, _logModule, "ON Server Startup Complete");
-    int exitCode = app.exec();
+    int exitCode = QCoreApplication::exec();
     LOG(Info, _logModule, "ON Server Shutting Down...");
 
     Common::Logger::Instance()->disconnect(&readline);
@@ -73,3 +86,13 @@ int main(int argv, char** argc)
     return exitCode;
 }
 
+} // namespace ServerCore
+} // namespace ON
+} // namespace IWStudio
+} // namespace Com
+
+int main(int argc, char **argv) {
+    Com::IWStudio::ON::ServerCore::Application app(argc, argv);
+
+    return app.run();
+}

@@ -15,7 +15,7 @@ class Readline : public QObject
     Q_OBJECT
 public:
     explicit Readline(QString prompt = "", QObject *parent = 0);
-    ~Readline();
+    virtual ~Readline();
 
     bool isEnabled();
 
