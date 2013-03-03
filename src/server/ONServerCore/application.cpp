@@ -33,20 +33,20 @@ int Application::run()
 {
     std::cout << "********************************************************" << std::endl <<
                  "* ON  Server  v" << MACRO_STR(ON_VERSION) <<
-                            "    (built on " << MACRO_STR(CURR_DATE) << ")" << std::endl <<
-                 "* (c) Copyright 2009 - " << MACRO_STR(CURR_YEAR) << " IWStudio" << std::endl <<
+                            "    (built on " << MACRO_STR(BUILD_DATE) << ")" << std::endl <<
+                 "* (c) Copyright 2009 - " << MACRO_STR(BUILD_YEAR) << " IWStudio" << std::endl <<
                  "* Released under GNU General Public License, vesion 2" << std::endl <<
                  "*" << std::endl <<
                  std::endl;
 
 
-    LOG(Info, _logModule, "ON Server Starting Up...");
+    _INFO(_logModule, "ON Server Starting Up...");
     setApplicationName("ONCoreServer");
     setApplicationVersion(MACRO_STR(ON_VERSION));
     setOrganizationName("IWStudio");
     setOrganizationDomain("iwstudio.hu");
 
-    LOG(Info, _logModule, "Installing signal handlers");
+    _INFO(_logModule, "Installing signal handlers");
     connect(new Common::UnixSignalHandler(SIGHUP, this),
             SIGNAL(CoughtSignal()), SLOT(quit()));
     connect(new Common::UnixSignalHandler(SIGINT, this),
@@ -56,11 +56,11 @@ int Application::run()
     connect(new Common::UnixSignalHandler(SIGTERM, this),
             SIGNAL(CoughtSignal()), SLOT(quit()));
 
-    LOG(Info, _logModule, "Parsing commandline arguments");
+    _INFO(_logModule, "Parsing commandline arguments");
 
-    LOG(Info, _logModule, "Loading config file");
+    _INFO(_logModule, "Loading config file");
 
-    LOG(Info, _logModule, "Setting up logger");
+    _INFO(_logModule, "Setting up logger");
     Common::Logger::Instance()->SetLogToStdout(true);
     Common::Logger::Instance()->SetStdoutLogLevel(Common::Logger::Level::Trace);
     Common::Logger::Instance()->SetFileLogLevel(Common::Logger::Level::Trace);
@@ -68,11 +68,11 @@ int Application::run()
     Common::Logger::Instance()->SetLogFile(QString(getenv("HOME")).append("/ONServerCore.log"));
     Common::Logger::Instance()->FlushStartupBuffer();
 
-    LOG(Info, _logModule, "Setting up command interface");
+    _INFO(_logModule, "Setting up command interface");
     ServerCore::CommandInterface commander;
     connect(&commander, SIGNAL(Quit()), SLOT(quit()));
 
-    LOG(Info, _logModule, "Starting Readline");
+    _INFO(_logModule, "Starting Readline");
     ServerCore::Readline readline("on> ");
     readline.connect(Common::Logger::Instance().data(), SIGNAL(BeforeLogLine()), SLOT(Disable()),
                      Qt::DirectConnection);
@@ -81,13 +81,13 @@ int Application::run()
     connect(&readline, SIGNAL(EndSignal()), SLOT(quit()));
     commander.connect(&readline, SIGNAL(LineRead(QString)), SLOT(ProcessCommand(QString)));
 
-    LOG(Info, _logModule, "Start listening");
+    _INFO(_logModule, "Start listening");
     ServerCore::Listener listener;
     listener.listen(3214);
 
-    LOG(Info, _logModule, "ON Server Startup Complete");
+    _INFO(_logModule, "ON Server Startup Complete");
     int exitCode = QCoreApplication::exec();
-    LOG(Info, _logModule, "ON Server Shutting Down...");
+    _INFO(_logModule, "ON Server Shutting Down...");
 
     Common::Logger::Instance()->disconnect(&readline);
     readline.Disable();

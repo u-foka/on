@@ -17,12 +17,12 @@ const QString ProtocolFactory::_logModule("ProtocolFactory");
 ProtocolFactory::ProtocolFactory(QObject *parent)
     : QObject(parent), _protocolsSorted(true)
 {
-    LOG(Trace, _logModule, "Created");
+    _TRACE(_logModule, "Created");
 }
 
 ProtocolFactory::~ProtocolFactory()
 {
-    LOG(Trace, _logModule, "Destroyed");
+    _TRACE(_logModule, "Destroyed");
 }
 
 IProtocol * ProtocolFactory::CreateProtocol(QIODevice &device, QObject *parent) const

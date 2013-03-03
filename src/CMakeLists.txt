@@ -13,7 +13,6 @@ endif()
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions(-DDEBUG)
 endif()
-add_definitions(-DON_SRC_ROOT="${PROJECT_SOURCE_DIR}")
 
 find_package(Readline)
 

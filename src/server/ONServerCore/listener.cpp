@@ -15,26 +15,26 @@ const QString Listener::_logModule("Listener");
 Listener::Listener(QObject *parent) :
     QTcpServer(parent), _protocolFactory(this), _pool()
 {
-    LOG(Trace, _logModule, "Creating");
+    _TRACE(_logModule, "Creating");
 
     _protocolFactory.RegisterProtocol(new Common::ONBinaryProtocol(&_protocolFactory));
 
-    LOG(Trace, _logModule, "Created");
+    _TRACE(_logModule, "Created");
 }
 
 Listener::~Listener()
 {
-    LOG(Trace, _logModule, "Destroying");
+    _TRACE(_logModule, "Destroying");
 
-    LOG(Info, _logModule, "Waiting for all connections to shut down...");
+    _INFO(_logModule, "Waiting for all connections to shut down...");
     _pool.waitForDone();
 
-    LOG(Trace, _logModule, "Destroyed");
+    _TRACE(_logModule, "Destroyed");
 }
 
 bool Listener::listen(const QHostAddress &address, quint16 port)
 {
-    LOGS(Info, _logModule, "Started listening on " << address.toString() << ":" << port);
+    _INFOS(_logModule, "Started listening on " << address.toString() << ":" << port);
     QTcpServer::listen(address, port);
 }
 

@@ -50,12 +50,16 @@ Logger::Logger()
       _logLocationToFile(true), _fileLevel(Level::Trace), _format(Format::Plain), _logModule("Logger"),
       _mutex(QMutex::Recursive), _startupCompleted(false)
 {
+#ifdef DEBUG
     _LOG(Trace, _logModule, "Created");
+#endif
 }
 
 Logger::~Logger()
 {
+#ifdef DEBUG
     _LOG(Trace, _logModule, "Destroyed");
+#endif
 }
 
 bool Logger::SetLogFile(const QString &fileName)

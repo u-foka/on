@@ -17,7 +17,7 @@ int UnixSignalHandler::_sigFd[2] = {-1, -1};
 UnixSignalHandler::UnixSignalHandler(int signal, QObject *parent) :
     QObject(parent), _logModule("UnixSignalHandler"), _signal(signal)
 {
-    LOG(Trace, _logModule, "Creating");
+    _TRACE(_logModule, "Creating");
 
     if (::socketpair(AF_UNIX, SOCK_STREAM, 0, _sigFd)) {
         throw Exception("Couldn't create socketpair");
@@ -31,18 +31,18 @@ UnixSignalHandler::UnixSignalHandler(int signal, QObject *parent) :
     sigemptyset(&sig.sa_mask);
     sig.sa_flags |= SA_RESTART;
 
-    LOGS(Debug, _logModule, "Setting up handler: " << strsignal(signal));
+    _DEBUGS(_logModule, "Setting up handler: " << strsignal(signal));
     if (sigaction(signal, &sig, 0) > 0)
         throw Exception("Failed to install handler");
 
-    LOG(Trace, _logModule, "Created");
+    _TRACE(_logModule, "Created");
 }
 
 UnixSignalHandler::~UnixSignalHandler()
 {
-    LOG(Trace, _logModule, "Destroying");
+    _TRACE(_logModule, "Destroying");
     delete _sn;
-    LOG(Trace, _logModule, "Destroyed");
+    _TRACE(_logModule, "Destroyed");
 }
 
  void UnixSignalHandler::SignalHandler(int)
@@ -57,7 +57,7 @@ void UnixSignalHandler::HandleSignal()
     char tmp;
     ::read(_sigFd[1], &tmp, sizeof(tmp));
 
-    LOGS(Trace, _logModule, "Cought signal: " << strsignal(_signal));
+    _TRACES(_logModule, "Cought signal: " << strsignal(_signal));
     emit CoughtSignal();
 
     _sn->setEnabled(true);
