@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+
 find_path(READLINE_INCLUDE_DIR readline/readline.h)
 find_library(READLINE_LIBRARY NAMES readline)
 

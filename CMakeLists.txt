@@ -1,7 +1,8 @@
 project(ON)
-set(PROJECT_VERSION "0.0.1")
+set(ON_VERSION "0.0.1")
 cmake_minimum_required(VERSION 2.8)
 
+set(PROJECT_VERSION ON_VERSION)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(ON_BINARY_DIR ${PROJECT_BINARY_DIR}/bin)
 

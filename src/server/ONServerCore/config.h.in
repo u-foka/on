@@ -1,7 +1,0 @@
-#ifndef COM_IWSTUDIO_ON_SERVERCORE_CONFIG_H
-#define COM_IWSTUDIO_ON_SERVERCORE_CONFIG_H
-
-/* Define to 1 if the GNU Readline library available. */
-#cmakedefine HAVE_READLINE @HAVE_READLINE@
-
-#endif // COM_IWSTUDIO_ON_SERVERCORE_CONFIG_H

@@ -1,0 +1,18 @@
+#ifndef COM_IWSTUDIO_ON_SERVERCORE_CONFIG_H
+#define COM_IWSTUDIO_ON_SERVERCORE_CONFIG_H
+
+/* Stringify helper */
+#define X_MACRO_STR(s) #s
+#define MACRO_STR(s) X_MACRO_STR(s)
+
+/* Product version */
+#cmakedefine ON_VERSION @ON_VERSION@
+
+/* Build date */
+#cmakedefine CURR_DATE @CURR_DATE@
+#cmakedefine CURR_YEAR @CURR_YEAR@
+
+/* Define to 1 if the GNU Readline library available. */
+#cmakedefine HAVE_READLINE @HAVE_READLINE@
+
+#endif // COM_IWSTUDIO_ON_SERVERCORE_CONFIG_H

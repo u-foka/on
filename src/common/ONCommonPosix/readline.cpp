@@ -1,7 +1,5 @@
 #include "readline.h"
 
-#include <config.h>
-
 #include <iostream>
 #if HAVE_READLINE == 1
 #include <readline/readline.h>
@@ -125,7 +123,7 @@ void Readline::sLineCallback(char *line)
 
 void Readline::lineCallback(char *line)
 {
-    if (line == 0) {
+    if (line == nullptr) {
         std::cout << std::endl;
         emit EndSignal();
         return;

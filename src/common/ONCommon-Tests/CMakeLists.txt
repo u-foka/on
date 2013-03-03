@@ -1,4 +1,5 @@
 project(ONCommon-Tests)
+set(PROJECT_VERSION ON_VERSION)
 cmake_minimum_required(VERSION 2.8)
 
 find_package(Threads)

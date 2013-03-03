@@ -8,10 +8,10 @@
 
 #include <ONCommon/log.h>
 #include <ONCommonPosix/unixsignalhandler.h>
+#include <ONCommonPosix/readline.h>
 
 #include "listener.h"
 #include "commandinterface.h"
-#include "readline.h"
 
 namespace Com {
 namespace IWStudio {
@@ -31,9 +31,18 @@ Application::~Application()
 
 int Application::run()
 {
+    std::cout << "********************************************************" << std::endl <<
+                 "* ON  Server  v" << MACRO_STR(ON_VERSION) <<
+                            "    (built on " << MACRO_STR(CURR_DATE) << ")" << std::endl <<
+                 "* (c) Copyright 2009 - " << MACRO_STR(CURR_YEAR) << " IWStudio" << std::endl <<
+                 "* Released under GNU General Public License, vesion 2" << std::endl <<
+                 "*" << std::endl <<
+                 std::endl;
+
+
     LOG(Info, _logModule, "ON Server Starting Up...");
     setApplicationName("ONCoreServer");
-    setApplicationVersion("0.0.1");
+    setApplicationVersion(MACRO_STR(ON_VERSION));
     setOrganizationName("IWStudio");
     setOrganizationDomain("iwstudio.hu");
 

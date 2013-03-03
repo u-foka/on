@@ -1,4 +1,5 @@
 project(ONCommonPosix)
+set(PROJECT_VERSION ON_VERSION)
 cmake_minimum_required(VERSION 2.8)
 
 find_package(Qt4 REQUIRED)
@@ -18,3 +19,6 @@ file(GLOB HEADERS *.h)
 qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${HEADERS_MOC})
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+if (HAVE_READLINE)
+    target_link_libraries(${PROJECT_NAME} ${READLINE_LIBRARY})
+endif (HAVE_READLINE)
