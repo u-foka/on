@@ -8,6 +8,8 @@
 #include <ONCommonPosix/unixsignalhandler.h>
 
 #include "listener.h"
+#include "commandinterface.h"
+#include "readline.h"
 
 const char *_logModule = "Main";
 
@@ -24,14 +26,14 @@ int main(int argv, char** argc)
     QCoreApplication app(argv, argc);
 
     LOG(Info, _logModule, "Installing signal handlers");
-    QObject::connect(new Common::UnixSignalHandler(SIGHUP, &app),
-                     SIGNAL(CoughtSignal()), &app, SLOT(quit()));
-    QObject::connect(new Common::UnixSignalHandler(SIGINT, &app),
-                     SIGNAL(CoughtSignal()), &app, SLOT(quit()));
-    QObject::connect(new Common::UnixSignalHandler(SIGQUIT, &app),
-                     SIGNAL(CoughtSignal()), &app, SLOT(quit()));
-    QObject::connect(new Common::UnixSignalHandler(SIGTERM, &app),
-                     SIGNAL(CoughtSignal()), &app, SLOT(quit()));
+    app.connect(new Common::UnixSignalHandler(SIGHUP, &app),
+                SIGNAL(CoughtSignal()), SLOT(quit()));
+    app.connect(new Common::UnixSignalHandler(SIGINT, &app),
+                SIGNAL(CoughtSignal()), SLOT(quit()));
+    app.connect(new Common::UnixSignalHandler(SIGQUIT, &app),
+                SIGNAL(CoughtSignal()), SLOT(quit()));
+    app.connect(new Common::UnixSignalHandler(SIGTERM, &app),
+                SIGNAL(CoughtSignal()), SLOT(quit()));
 
     LOG(Info, _logModule, "Parsing commandline arguments");
 
@@ -44,6 +46,19 @@ int main(int argv, char** argc)
     Common::Logger::Instance()->SetLogFile(QString(getenv("HOME")).append("/ONServerCore.log"));
     Common::Logger::Instance()->FlushStartupBuffer();
 
+    LOG(Info, _logModule, "Setting up command interface");
+    ServerCore::CommandInterface commander;
+    app.connect(&commander, SIGNAL(Quit()), SLOT(quit()));
+
+    LOG(Info, _logModule, "Starting Readline");
+    ServerCore::Readline readline("on> ");
+    readline.connect(Common::Logger::Instance().data(), SIGNAL(BeforeLogLine()), SLOT(Disable()),
+                     Qt::DirectConnection);
+    readline.connect(Common::Logger::Instance().data(), SIGNAL(AfterLogLine()), SLOT(Enable()),
+                     Qt::DirectConnection);
+    app.connect(&readline, SIGNAL(EndSignal()), SLOT(quit()));
+    commander.connect(&readline, SIGNAL(LineRead(QString)), SLOT(ProcessCommand(QString)));
+
     LOG(Info, _logModule, "Start listening");
     ServerCore::Listener listener;
     listener.listen(3214);
@@ -51,6 +66,9 @@ int main(int argv, char** argc)
     LOG(Info, _logModule, "ON Server Startup Complete");
     int exitCode = app.exec();
     LOG(Info, _logModule, "ON Server Shutting Down...");
+
+    Common::Logger::Instance()->disconnect(&readline);
+    readline.Disable();
 
     return exitCode;
 }

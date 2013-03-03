@@ -1,6 +1,7 @@
 #ifndef COM_IWSTUDIO_ON_COMMON_LOGGER_H
 #define COM_IWSTUDIO_ON_COMMON_LOGGER_H
 
+#include <QObject>
 #include <QSharedPointer>
 #include <QVector>
 #include <QMap>
@@ -17,8 +18,9 @@ namespace Common {
 /**
  * @brief Logger class that writes multiple outputs
  */
-class Logger
+class Logger : public QObject
 {
+    Q_OBJECT
 public:
     /**
      * @brief Available log levels
@@ -110,6 +112,10 @@ public:
         QTextStream _lineStream;
 
     };
+
+signals:
+    void BeforeLogLine();
+    void AfterLogLine();
 
 protected:
     struct LogLine {

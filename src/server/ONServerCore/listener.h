@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QThreadPool>
 
 #include <ONCommon/iprotocol.h>
 #include <ONCommon/protocolfactory.h>
@@ -38,6 +39,7 @@ private:
     static const QString _logModule;
 
     Common::ProtocolFactory _protocolFactory;
+    QThreadPool _pool;
 
 };
 

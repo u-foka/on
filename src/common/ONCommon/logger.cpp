@@ -121,6 +121,8 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
     strftime(dateline,20,"%Y/%m/%d %H:%M:%S",ltm);
     QString datestring = QString::fromLocal8Bit(dateline);
 
+    emit BeforeLogLine();
+
     if (_logToStdout && _stdoutLevel >= level) {
         using namespace std;
 
@@ -133,7 +135,6 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
             cout << " // " << location.toUtf8().constData();
         }
         cout << endl;
-        cout.flush();
     }
 
     if (_file.isOpen() && _fileLevel >= level) {
@@ -178,6 +179,8 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
         _file.write(lineStr.data(), lineStr.length());
         _file.flush();
     }
+
+    emit AfterLogLine();
 }
 
 Logger::Stream::Stream(const QSharedPointer<Logger> &logger, Level level, const QString &module,

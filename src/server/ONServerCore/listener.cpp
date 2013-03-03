@@ -1,7 +1,5 @@
 #include "listener.h"
 
-#include <QThreadPool>
-
 #include <ONCommon/log.h>
 #include <ONCommonProtocol/onbinaryprotocol.h>
 
@@ -15,7 +13,7 @@ namespace ServerCore {
 const QString Listener::_logModule("Listener");
 
 Listener::Listener(QObject *parent) :
-    QTcpServer(parent), _protocolFactory(this)
+    QTcpServer(parent), _protocolFactory(this), _pool()
 {
     LOG(Trace, _logModule, "Creating");
 
@@ -26,6 +24,11 @@ Listener::Listener(QObject *parent) :
 
 Listener::~Listener()
 {
+    LOG(Trace, _logModule, "Destroying");
+
+    LOG(Info, _logModule, "Waiting for all connections to shut down...");
+    _pool.waitForDone();
+
     LOG(Trace, _logModule, "Destroyed");
 }
 
@@ -43,7 +46,7 @@ bool Listener::listen(quint16 port)
 void Listener::incomingConnection(int handle)
 {
     QRunnable *thread = new ConnectionThread<ConnectionHandler>(_protocolFactory, handle);
-    QThreadPool::globalInstance()->start(thread);
+    _pool.start(thread);
 }
 
 } // namespace ServerCore
