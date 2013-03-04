@@ -43,7 +43,7 @@ bool Listener::listen(quint16 port)
     listen(QHostAddress::Any, port);
 }
 
-void Listener::incomingConnection(int handle)
+void Listener::incomingConnection(qintptr handle)
 {
     QRunnable *thread = new ConnectionThread<ConnectionHandler>(_protocolFactory, handle);
     _pool.start(thread);

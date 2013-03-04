@@ -2,21 +2,17 @@ project(ONServerCore)
 set(PROJECT_VERSION ON_VERSION)
 cmake_minimum_required(VERSION 2.8)
 
-find_package(Qt4 REQUIRED)
-set(QT_USE_CORE TRUE)
-set(QT_USE_GUI FALSE)
-set(QT_USE_QTNETWORK TRUE)
-
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Network REQUIRED)
+set(CMAKE_AUTOMOC ON)
 
 include_directories(${ON_SOURCE_ROOT_DIR}/common)
 
 file(GLOB SOURCES *.cpp)
 file(GLOB HEADERS *.h)
 
-qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${HEADERS_MOC})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+qt5_use_modules(${PROJECT_NAME} Core Network)
 target_link_libraries(${PROJECT_NAME} ONCommon)
 target_link_libraries(${PROJECT_NAME} ONCommonPosix)
 target_link_libraries(${PROJECT_NAME} ONCommonProtocol)

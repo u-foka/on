@@ -4,20 +4,16 @@ cmake_minimum_required(VERSION 2.8)
 
 find_package(Threads)
 
-find_package(Qt4 REQUIRED)
-set(QT_USE_CORE TRUE)
-set(QT_USE_GUI FALSE)
-
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
+find_package(Qt5Core REQUIRED)
+set(CMAKE_AUTOMOC ON)
 
 include_directories(${ON_SOURCE_ROOT_DIR}/common)
 
 file(GLOB SOURCES *.cpp)
 file(GLOB HEADERS *.h)
 
-qt4_wrap_cpp(HEADERS_MOC ${HEADERS})
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${HEADERS_MOC})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+qt5_use_modules(${PROJECT_NAME} Core)
 target_link_libraries(${PROJECT_NAME} ONCommon)
 target_link_libraries(${PROJECT_NAME} ONCommonProtocol)
 target_link_libraries(${PROJECT_NAME} gtest)

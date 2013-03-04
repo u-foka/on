@@ -33,7 +33,7 @@ signals:
 public slots:
 
 protected:
-    virtual void incomingConnection(int handle) override;
+    virtual void incomingConnection(qintptr handle) override;
     
 private:
     static const QString _logModule;
