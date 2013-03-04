@@ -32,6 +32,8 @@ void CommandInterface::ProcessCommand(QString command)
     } else if (command.compare("exit", Qt::CaseInsensitive) == 0 ||
         command.compare("quit", Qt::CaseInsensitive) == 0) {
         emit Quit();
+    } else {
+        std::cout << "Unknown command" << std::endl;
     }
 }
 
