@@ -1,7 +1,9 @@
 project(ON)
-set(ON_VERSION "0.0.1")
 cmake_minimum_required(VERSION 2.8)
-SET(CMAKE_COLOR_MAKEFILE ON)
+set(CMAKE_COLOR_MAKEFILE ON)
+
+execute_process(COMMAND git describe
+                OUTPUT_VARIABLE ON_VERSION)
 
 set(PROJECT_VERSION ON_VERSION)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

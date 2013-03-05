@@ -31,7 +31,7 @@ Application::~Application()
 
 int Application::run()
 {
-    std::cout << "********************************************************" << std::endl <<
+    std::cout << "***********************************************************" << std::endl <<
                  "* ON  Server  v" << MACRO_STR(ON_VERSION) <<
                             "    (built on " << MACRO_STR(BUILD_DATE) << ")" << std::endl <<
                  "* (c) Copyright 2009 - " << MACRO_STR(BUILD_YEAR) << " IWStudio" << std::endl <<
