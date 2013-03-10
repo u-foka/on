@@ -29,7 +29,7 @@ UnixSignalHandler::UnixSignalHandler(int signal, QObject *parent) :
     struct sigaction sig;
     sig.sa_handler = SignalHandler;
     sigemptyset(&sig.sa_mask);
-    sig.sa_flags |= SA_RESTART;
+    sig.sa_flags = SA_RESTART;
 
     _DEBUGS(_logModule, "Setting up handler: " << strsignal(signal));
     if (sigaction(signal, &sig, 0) > 0)

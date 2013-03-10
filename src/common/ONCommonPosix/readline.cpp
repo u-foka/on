@@ -42,6 +42,11 @@ Readline::~Readline()
     _enabled = false;
 
     rl_callback_handler_remove();
+
+    if (_savedLine) {
+        rl_free(_savedLine);
+        _savedLine = 0;
+    }
 }
 
 bool Readline::isEnabled()
@@ -78,6 +83,10 @@ void Readline::Enable()
     rl_replace_line(_savedLine, 0);
     rl_point = _savedPoint;
     rl_redisplay();
+
+    rl_free(_savedLine);
+    _savedLine = 0;
+    _savedPoint = 0;
 
     _notifier.setEnabled(true);
     _enabled = true;
