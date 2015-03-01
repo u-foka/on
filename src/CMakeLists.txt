@@ -21,7 +21,7 @@ DATE(CURR_DATE)
 YEAR(CURR_YEAR)
 
 configure_file(config.h.in config.h)
-add_definitions(-include "${CMAKE_CURRENT_BINARY_DIR}/config.h")
+add_definitions(-include "\"${CMAKE_CURRENT_BINARY_DIR}/config.h\"")
 
 add_subdirectory(common)
 add_subdirectory(server)
