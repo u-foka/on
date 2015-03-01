@@ -18,10 +18,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${ON_BINARY_DIR} CACHE PATH "Single Directory
 # Source
 add_subdirectory(src)
 
-# Testing
-enable_testing()
-add_test(ONCommon ${ON_BINARY_DIR}/ONCommon-Tests)
-
 # Documentation
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

@@ -2,21 +2,28 @@ project(ONCommon-Tests)
 set(PROJECT_VERSION DETECTED_ON_VERSION)
 cmake_minimum_required(VERSION 3.0)
 
-find_package(Threads)
+find_package(GMock)
 
-find_package(Qt5Core REQUIRED)
-set(CMAKE_AUTOMOC ON)
+if(GMOCK_FOUND)
 
-include_directories(${ON_SOURCE_ROOT_DIR}/common)
+    find_package(Threads REQUIRED)
+    find_package(Qt5Core REQUIRED)
+    set(CMAKE_AUTOMOC ON)
 
-file(GLOB SOURCES *.cpp)
-file(GLOB HEADERS *.h)
+    include_directories(${ON_SOURCE_ROOT_DIR}/common)
+    include_directories(GMOCK_INCLUDE_DIRS)
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-qt5_use_modules(${PROJECT_NAME} Core)
-target_link_libraries(${PROJECT_NAME} ONCommon)
-target_link_libraries(${PROJECT_NAME} ONCommonProtocol)
-target_link_libraries(${PROJECT_NAME} gtest)
-target_link_libraries(${PROJECT_NAME} gmock)
-target_link_libraries(${PROJECT_NAME} gmock_main)
-target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+    file(GLOB SOURCES *.cpp)
+    file(GLOB HEADERS *.h)
+
+    add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+    qt5_use_modules(${PROJECT_NAME} Core)
+    target_link_libraries(${PROJECT_NAME} ONCommon)
+    target_link_libraries(${PROJECT_NAME} ONCommonProtocol)
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${PROJECT_NAME} GMOCK_MAIN_LIBRARIES)
+
+    enable_testing()
+    add_test(ONCommon ${ON_BINARY_DIR}/ONCommon-Tests)
+
+endif(GMOCK_FOUND)
