@@ -32,7 +32,7 @@ Application::~Application()
 int Application::run()
 {
     std::cout << "***********************************************************" << std::endl <<
-                 "* ON  Server  v" << MACRO_STR(ON_VERSION) <<
+                 "* ON  Server  v" << MACRO_STR(DETECTED_ON_VERSION) <<
                             "    (built on " << MACRO_STR(BUILD_DATE) << ")" << std::endl <<
                  "* (c) Copyright 2009 - " << MACRO_STR(BUILD_YEAR) << " IWStudio" << std::endl <<
                  "* Released under GNU General Public License, vesion 2" << std::endl <<
@@ -42,7 +42,7 @@ int Application::run()
 
     _INFO(_logModule, "ON Server Starting Up...");
     setApplicationName("ONCoreServer");
-    setApplicationVersion(MACRO_STR(ON_VERSION));
+    setApplicationVersion(MACRO_STR(DETECTED_ON_VERSION));
     setOrganizationName("IWStudio");
     setOrganizationDomain("iwstudio.hu");
 

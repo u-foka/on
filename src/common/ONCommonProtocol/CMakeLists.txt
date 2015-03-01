@@ -1,5 +1,5 @@
 project(ONCommonProtocol)
-set(PROJECT_VERSION ON_VERSION)
+set(PROJECT_VERSION DETECTED_ON_VERSION)
 cmake_minimum_required(VERSION 3.0)
 
 find_package(Qt5Core REQUIRED)

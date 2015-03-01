@@ -2,10 +2,11 @@ project(ON)
 cmake_minimum_required(VERSION 3.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 
-execute_process(COMMAND git describe
-                OUTPUT_VARIABLE ON_VERSION)
+execute_process(WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                COMMAND git describe
+                OUTPUT_VARIABLE DETECTED_ON_VERSION)
 
-set(PROJECT_VERSION ON_VERSION)
+set(PROJECT_VERSION DETECTED_ON_VERSION)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(ON_BINARY_DIR ${PROJECT_BINARY_DIR}/bin)
 

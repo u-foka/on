@@ -6,7 +6,7 @@
 #define MACRO_STR(s) X_MACRO_STR(s)
 
 /* Product version */
-#define ON_VERSION @ON_VERSION@
+#define DETECTED_ON_VERSION @DETECTED_ON_VERSION@
 
 /* Build date */
 #define BUILD_DATE @CURR_DATE@
