@@ -5,8 +5,11 @@ cmake_minimum_required(VERSION 3.0)
 set(ON_SOURCE_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
 # Enable C++11
-if(CMAKE_COMPILER_IS_GNUCXX)
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_definitions(-std=gnu++0x)
+endif()
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_definitions(-std=c++11)
 endif()
 
 # Defines
