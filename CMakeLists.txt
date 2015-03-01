@@ -1,5 +1,5 @@
 project(ON)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 
 execute_process(COMMAND git describe
