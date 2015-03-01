@@ -36,18 +36,22 @@ private slots:
 private:
     static Readline *_instance;
     static QMutex _instanceGuard;
+#if HAVE_READLINE == 1
     static void sLineCallback(char *line);
+#endif // HAVE_READLINE == 1
 
     QSocketNotifier _notifier;
     bool _enabled;
     QMutex _enabledGuard;
     QString _prompt;
 
+#if HAVE_READLINE == 1
     char* _savedLine;
     int _savedPoint;
 
     void lineCallback(char *line);
-    
+#endif // HAVE_READLINE == 1
+
 };
 
 } // namespace ServerCore
