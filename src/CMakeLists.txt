@@ -17,7 +17,10 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions(-DDEBUG)
 endif()
 
-find_package(Readline)
+if(USE_READLINE)
+    message(STATUS "Enabled readline support")
+    find_package(Readline REQUIRE)
+endif()
 
 include(DateTime)
 DATE(CURR_DATE)

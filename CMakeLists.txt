@@ -15,6 +15,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_ON_BINARY_DIR} CACHE PATH "Single Dir
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_ON_BINARY_DIR} CACHE PATH "Single Directory for all Libraries")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BUILD_ON_BINARY_DIR} CACHE PATH "Single Directory for all static libraries.")
 
+# Build options
+option(USE_READLINE "Use GNU Readline" OFF)
+
 # Source
 add_subdirectory(src)
 

@@ -12,6 +12,6 @@ file(GLOB HEADERS *.h)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 qt5_use_modules(${PROJECT_NAME} Core)
-if (HAVE_READLINE)
+if(HAVE_READLINE)
     target_link_libraries(${PROJECT_NAME} ${READLINE_LIBRARY})
-endif (HAVE_READLINE)
+endif()
