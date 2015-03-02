@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
+if(NOT DEFINED READLINE_INCLUDE_DIR)
 find_path(READLINE_INCLUDE_DIR readline/readline.h)
+endif()
+if(NOT DEFINED READLINE_LIBRARY)
 find_library(READLINE_LIBRARY NAMES readline)
+endif()
 
 if (READLINE_INCLUDE_DIR AND READLINE_LIBRARY)
     set(HAVE_READLINE 1)
