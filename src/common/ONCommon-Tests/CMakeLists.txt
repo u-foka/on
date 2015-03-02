@@ -24,6 +24,6 @@ if(GMOCK_FOUND)
     target_link_libraries(${PROJECT_NAME} GMOCK_MAIN_LIBRARIES)
 
     enable_testing()
-    add_test(ONCommon ${ON_BINARY_DIR}/ONCommon-Tests)
+    add_test(ONCommon ${BUILD_ON_BINARY_DIR}/ONCommon-Tests)
 
 endif(GMOCK_FOUND)

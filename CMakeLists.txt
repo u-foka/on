@@ -8,12 +8,12 @@ execute_process(WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 
 set(PROJECT_VERSION DETECTED_ON_VERSION)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(ON_BINARY_DIR ${PROJECT_BINARY_DIR}/bin)
+set(BUILD_ON_BINARY_DIR ${PROJECT_BINARY_DIR}/bin)
 
 # Common output directory
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${ON_BINARY_DIR} CACHE PATH "Single Directory for all Executables.")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${ON_BINARY_DIR} CACHE PATH "Single Directory for all Libraries")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${ON_BINARY_DIR} CACHE PATH "Single Directory for all static libraries.")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_ON_BINARY_DIR} CACHE PATH "Single Directory for all Executables.")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_ON_BINARY_DIR} CACHE PATH "Single Directory for all Libraries")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BUILD_ON_BINARY_DIR} CACHE PATH "Single Directory for all static libraries.")
 
 # Source
 add_subdirectory(src)
