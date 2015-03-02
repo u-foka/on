@@ -34,6 +34,7 @@ void CommandInterface::ProcessCommand(QString command)
         emit Quit();
     } else {
         std::cout << "Unknown command" << std::endl;
+        std::cout << "Enter help to list the available commands." << std::endl;
     }
 }
 
