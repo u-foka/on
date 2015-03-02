@@ -109,10 +109,10 @@ void Logger::Log(Level level, const QString &module, const QString &message, con
 
     if (! _startupCompleted) {
         _startupBuffer.append({
-                level: level,
-                module: module,
-                message: message,
-                location: location
+                .level = level,
+                .module = module,
+                .message = message,
+                .location = location
             });
 
         return;

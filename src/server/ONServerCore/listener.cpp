@@ -35,12 +35,12 @@ Listener::~Listener()
 bool Listener::listen(const QHostAddress &address, quint16 port)
 {
     _INFOS(_logModule, "Started listening on " << address.toString() << ":" << port);
-    QTcpServer::listen(address, port);
+    return QTcpServer::listen(address, port);
 }
 
 bool Listener::listen(quint16 port)
 {
-    listen(QHostAddress::Any, port);
+    return listen(QHostAddress::Any, port);
 }
 
 void Listener::incomingConnection(qintptr handle)
