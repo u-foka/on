@@ -19,7 +19,7 @@ endif()
 
 if(USE_READLINE)
     message(STATUS "Enabled readline support")
-    find_package(Readline REQUIRE)
+    find_package(Readline REQUIRED)
 endif()
 
 include(DateTime)
